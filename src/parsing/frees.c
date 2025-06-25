@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   frees.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmendiol <mmendiol@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 12:24:03 by mmendiol          #+#    #+#             */
-/*   Updated: 2024/10/25 12:10:31 by mmendiol         ###   ########.fr       */
+/*   Updated: 2025/06/25 13:29:30 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	free_list(t_token **stack)
+void free_list(t_token **stack)
 {
 	t_token	*aux;
 
@@ -27,7 +27,7 @@ void	free_list(t_token **stack)
 	*stack = NULL;
 }
 
-void	free_tokens(t_token **tokens)
+void free_tokens(t_token **tokens)
 {
 	t_token	*current;
 	t_token	*next;
@@ -48,7 +48,7 @@ void	free_tokens(t_token **tokens)
 	*tokens = NULL;
 }
 
-void	free_env(t_env **env)
+void free_env(t_env **env)
 {
 	t_env	*current;
 	t_env	*next;
@@ -60,14 +60,14 @@ void	free_env(t_env **env)
 	{
 		next = current->next;
 		free(current->name);
-		free_matrix(&current->value);
+		free(current->value);
 		free(current);
 		current = next;
 	}
 	*env = NULL;
 }
 
-void	free_iofile(t_iofile *iofile)
+void free_iofile(t_iofile *iofile)
 {
 	t_iofile	*tmp;
 

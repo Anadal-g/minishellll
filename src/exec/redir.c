@@ -6,13 +6,13 @@
 /*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 12:49:47 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/06/02 12:20:29 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/06/25 13:39:32 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	read_till_character_redir(char *input, int *start, int *counter)
+void read_till_character_redir(char *input, int *start, int *counter)
 {
 	if (!input || !start || !counter)
 		return ;
@@ -25,7 +25,7 @@ void	read_till_character_redir(char *input, int *start, int *counter)
 	}
 }
 
-int	process_operator_or_space(char **r, char *str, int *i, int *commands)
+int process_operator_or_space(char **r, char *str, int *i, int *commands)
 {
 	int	op_len;
 
@@ -43,7 +43,7 @@ int	process_operator_or_space(char **r, char *str, int *i, int *commands)
 	return (0);
 }
 
-int	redir_command_spliter(char **r, char *str)
+int redir_command_spliter(char **r, char *str)
 {
 	int		i;
 	int		j;
@@ -57,10 +57,14 @@ int	redir_command_spliter(char **r, char *str)
 	{
 		if (process_operator_or_space(r, str, &i, &commands))
 			continue ;
+		j = i;
 		read_till_character_redir(str, &j, &i);
 		tmp_substr = ft_substr(str, j, i - j);
 		if (!tmp_substr || !*tmp_substr)
+		{
+			free(tmp_substr);
 			continue ;
+		}
 		tmp_trim = ft_strtrim(tmp_substr, " ");
 		free(tmp_substr);
 		if (!tmp_trim)
@@ -71,7 +75,7 @@ int	redir_command_spliter(char **r, char *str)
 	return (1);
 }
 
-void	conditional_operator_counter(char *str, int *i, int *commands)
+void conditional_operator_counter(char *str, int *i, int *commands)
 {
 	int	op_len;
 	int	in_word;
@@ -99,7 +103,7 @@ void	conditional_operator_counter(char *str, int *i, int *commands)
 	}
 }
 
-int	redir_counter(char *str)
+int redir_counter(char *str)
 {
 	int	i;
 	int	commands;
@@ -110,7 +114,7 @@ int	redir_counter(char *str)
 	return (commands);
 }
 
-char	**redir_divisor(char const *s)
+char **redir_divisor(char const *s)
 {
 	int		commands;
 	char	**list_commands;

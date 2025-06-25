@@ -3,47 +3,68 @@
 /*                                                        :::      ::::::::   */
 /*   expansor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmendiol <mmendiol@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/23 14:44:23 by mmendiol          #+#    #+#             */
-/*   Updated: 2024/10/03 17:39:45 by mmendiol         ###   ########.fr       */
+/*   Updated: 2025/06/25 13:28:36 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-char	*get_variable_name(char **str)
+char *get_variable_name(char **str)
 {
 	char	*var_start;
 	size_t	len;
 
 	var_start = *str;
 	len = 0;
-	while (**str && (isalnum(**str) || **str == '_'))
+	
+	if (**str == '?')
+	{
+		(*str)++;
+		return (ft_strdup("?"));
+	}
+	
+	while (**str && (ft_isalnum(**str) || **str == '_'))
 		(*str)++;
 	len = *str - var_start;
 	return (ft_strndup(var_start, len));
 }
 
-void	append_expanded(char **result, size_t *result_len, char *var_name)
+void append_expanded(char **result, size_t *result_len, char *var_name, t_env *env)
 {
 	char	*env_value;
 	size_t	env_len;
+	t_env	*env_node;
 
-	env_value = getenv(var_name);
-	env_len = ft_strlen(env_value);
-	if (env_value)
+	if (ft_strcmp(var_name, "?") == 0)
 	{
-		*result = ft_realloc(*result, *result_len, *result_len + env_len + 1);
-		if (*result)
-		{
-			ft_strcat(*result, env_value);
-			*result_len += env_len;
-		}
+		env_value = ft_itoa(env ? env->last_out : 0);
+		if (!env_value)
+			return;
 	}
+	else
+	{
+		env_node = ft_find_env(env, var_name);
+		if (!env_node || !env_node->value)
+			return;
+		env_value = env_node->value;
+	}
+	
+	env_len = ft_strlen(env_value);
+	*result = ft_realloc(*result, *result_len, *result_len + env_len + 1);
+	if (*result)
+	{
+		ft_strcat(*result, env_value);
+		*result_len += env_len;
+	}
+	
+	if (ft_strcmp(var_name, "?") == 0)
+		free(env_value);
 }
 
-void	append_other_characters(char **result, size_t *result_len, char c)
+void append_other_characters(char **result, size_t *result_len, char c)
 {
 	size_t	len;
 
@@ -57,7 +78,7 @@ void	append_other_characters(char **result, size_t *result_len, char c)
 	}
 }
 
-char	*expand_variable(char *str)
+char *expand_variable(char *str, t_env *env)
 {
 	char	*result;
 	size_t	result_len;
@@ -66,17 +87,18 @@ char	*expand_variable(char *str)
 	result_len = 0;
 	result = ft_calloc(1, sizeof(char));
 	if (!result)
-		return (free(result), NULL);
+		return (NULL);
 	result[0] = '\0';
+	
 	while (*str)
 	{
-		if (*str == '$')
+		if (*str == '$' && *(str + 1))
 		{
 			str++;
 			var_name = get_variable_name(&str);
 			if (var_name)
 			{
-				append_expanded(&result, &result_len, var_name);
+				append_expanded(&result, &result_len, var_name, env);
 				free(var_name);
 			}
 		}
@@ -86,7 +108,7 @@ char	*expand_variable(char *str)
 	return (result);
 }
 
-void	expander(char **tokens)
+void expander(char **tokens, t_env *env)
 {
 	int		i;
 	char	*expanded;
@@ -96,7 +118,7 @@ void	expander(char **tokens)
 	{
 		if (tokens[i][0] != '\'')
 		{
-			expanded = expand_variable(tokens[i]);
+			expanded = expand_variable(tokens[i], env);
 			if (expanded)
 			{
 				free(tokens[i]);

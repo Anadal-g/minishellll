@@ -6,7 +6,7 @@
 /*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 21:01:25 by mmendiol          #+#    #+#             */
-/*   Updated: 2025/06/02 13:14:26 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/06/25 13:21:05 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,45 +15,50 @@
 
 int is_builtin(const char *command)
 {
-    if (!command)
-        return (0);
-    
-    return (!ft_strcmp(command, "cd") ||
-           !ft_strcmp(command, "echo") ||
-           !ft_strcmp(command, "exit") ||
-           !ft_strcmp(command, "export") ||
-           !ft_strcmp(command, "unset") ||
-           !ft_strcmp(command, "env") ||
-           !ft_strcmp(command, "pwd") ||
-           !ft_strcmp(command, "history"));
+	if (!command)
+		return (0);
+	if (ft_strcmp(command, ECHO_TXT) == 0)
+		return (1);
+	if (ft_strcmp(command, CD_TXT) == 0)
+		return (1);
+	if (ft_strcmp(command, PWD_TXT) == 0)
+		return (1);
+	if (ft_strcmp(command, EXPORT_TXT) == 0)
+		return (1);
+	if (ft_strcmp(command, UNSET_TXT) == 0)
+		return (1);
+	if (ft_strcmp(command, ENV_TXT) == 0)
+		return (1);
+	if (ft_strcmp(command, EXIT_TXT) == 0)
+		return (1);
+	return (0);
 }
 
 void select_builtin(t_token **tokens, t_env **env, char *input)
 {
-    t_token *token;
-    int exit_code = 0;
-
-    if (!tokens || !*tokens)
-        return ;
-    
-    token = *tokens;
-    
-    if (ft_strcmp(token->command, "exit") == 0)
-        exit_code = do_exit(token, input);
-    else if (ft_strcmp(token->command, "echo") == 0)
-        exit_code = do_echo(token);
-    else if (ft_strcmp(token->command, "cd") == 0)
-        exit_code = ft_cd(token, env);
-    else if (ft_strcmp(token->command, "pwd") == 0)
-        exit_code = do_pwd();
-    else if (ft_strcmp(token->command, "export") == 0)
-        exit_code = do_export(token, env);
-    else if (ft_strcmp(token->command, "unset") == 0)
-        exit_code = do_unset(token, env);
-    else if (ft_strcmp(token->command, "env") == 0)
-        exit_code = do_env(token, *env);
-    else if (ft_strcmp(token->command, "history") == 0)
-        exit_code = show_history(token);
-    if (*env)
-        (*env)->last_out = exit_code;
+	int exit_status;
+	
+	(void)input;
+	if (!tokens || !*tokens || !(*tokens)->tokens || !(*tokens)->tokens[0])
+		return;
+		
+	if (ft_strcmp((*tokens)->tokens[0], ECHO_TXT) == 0)
+		exit_status = do_echo(*tokens);
+	else if (ft_strcmp((*tokens)->tokens[0], CD_TXT) == 0)
+		exit_status = ft_cd(*tokens, env);
+	else if (ft_strcmp((*tokens)->tokens[0], PWD_TXT) == 0)
+		exit_status = do_pwd();
+	else if (ft_strcmp((*tokens)->tokens[0], EXPORT_TXT) == 0)
+		exit_status = do_export(*tokens, env);
+	else if (ft_strcmp((*tokens)->tokens[0], UNSET_TXT) == 0)
+		exit_status = do_unset(*tokens, env);
+	else if (ft_strcmp((*tokens)->tokens[0], ENV_TXT) == 0)
+		exit_status = do_env(*tokens, *env);
+	else if (ft_strcmp((*tokens)->tokens[0], EXIT_TXT) == 0)
+		exit_status = do_exit(*tokens, env);
+	else
+		exit_status = 127;
+		
+	if (*env)
+		(*env)->last_out = exit_status;
 }

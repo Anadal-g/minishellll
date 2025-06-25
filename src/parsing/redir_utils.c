@@ -5,11 +5,10 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/27 11:26:47 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/03/27 11:32:29 by anadal-g         ###   ########.fr       */
+/*   Created: 2025/06/25 13:53:36 by anadal-g          #+#    #+#             */
+/*   Updated: 2025/06/25 13:53:39 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "../../includes/minishell.h"
 
@@ -27,7 +26,8 @@ void remove_redirection_tokens(char **tokens)
             ft_strcmp(tokens[i], ">") == 0 || ft_strcmp(tokens[i], ">>") == 0)
         {
             free(tokens[i]);
-            free(tokens[i + 1]);
+            if (tokens[i + 1])
+                free(tokens[i + 1]);
             j = i;
             while (tokens[j + 2])
             {
@@ -35,7 +35,8 @@ void remove_redirection_tokens(char **tokens)
                 j++;
             }
             tokens[j] = NULL;
-            tokens[j + 1] = NULL;
+            if (tokens[j + 1])
+                tokens[j + 1] = NULL;
         }
         else
             i++;

@@ -3,21 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   quote_handler.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mmendiol <mmendiol@student.42.fr>          +#+  +:+       +#+        */
+/*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 20:11:05 by mmendiol          #+#    #+#             */
-/*   Updated: 2024/10/02 20:46:27 by mmendiol         ###   ########.fr       */
+/*   Updated: 2025/06/25 13:27:28 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../includes/minishell.h"
 
-void	quotes_check_in_token(char *token, int *in_quotes)
+
+void quotes_check_in_token(char *token, int *in_quotes)
 {
 	int		j;
 	char	quote;
 
 	j = -1;
+	quote = 0;
 	while (token[++j])
 	{
 		if (quote_equal(token[j]) && *in_quotes == 0)
@@ -33,10 +35,10 @@ void	quotes_check_in_token(char *token, int *in_quotes)
 	}
 }
 
-int	quotes_checker(t_token *token)
+int quotes_checker(t_token *token)
 {
-	int	i;
-	int	in_quotes;
+	int i;
+	int in_quotes;
 
 	if (!token || !token->tokens)
 		return (1);
@@ -51,7 +53,7 @@ int	quotes_checker(t_token *token)
 	return (1);
 }
 
-int	quotes_handler(t_token **token, char *input)
+int quotes_handler(t_token **token, char *input)
 {
 	t_token	*aux;
 
@@ -60,7 +62,6 @@ int	quotes_handler(t_token **token, char *input)
 	{
 		if (!quotes_checker(aux))
 		{
-			add_history(input);
 			show_error(QUOTES_NOT_VALID, aux->command);
 			free(input);
 			return (0);
@@ -70,7 +71,7 @@ int	quotes_handler(t_token **token, char *input)
 	return (1);
 }
 
-void	quotes_remover(char *input)
+void quotes_remover(char *input)
 {
 	char	*src;
 	char	exterior_quote;
@@ -96,7 +97,7 @@ void	quotes_remover(char *input)
 	*input = '\0';
 }
 
-char	*quote_joiner(char **tokens)
+char *quote_joiner(char **tokens)
 {
 	int		final_len;
 	char	*final_str;
@@ -109,7 +110,7 @@ char	*quote_joiner(char **tokens)
 		final_len += ft_strlen(tokens[i]);
 	final_str = ft_calloc(final_len + 1, sizeof(char));
 	if (!final_str)
-		return (free(final_str), NULL);
+		return (NULL);
 	final_str[0] = '\0';
 	i = -1;
 	while (tokens[++i])

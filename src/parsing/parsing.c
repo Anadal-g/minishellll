@@ -6,13 +6,29 @@
 /*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 15:08:26 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/06/03 12:12:51 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/06/25 13:28:50 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	read_till_character(char *input, int *start, int *counter, char c)
+void jump_character(char *str, int *counter, char c, int flag)
+{
+	if (flag == TRUE)
+	{
+		while (str[*counter] && str[*counter] == c)
+			(*counter)++;
+	}
+	else
+	{
+		while (str[*counter] && str[*counter] != c)
+			(*counter)++;
+		if (str[*counter] == c)
+			(*counter)++;
+	}
+}
+
+void read_till_character(char *input, int *start, int *counter, char c)
 {
 	char	quote;
 
@@ -30,7 +46,7 @@ void	read_till_character(char *input, int *start, int *counter, char c)
 	}
 }
 
-int	write_command(char **r, char *str, char c)
+int write_command(char **r, char *str, char c)
 {
 	int		i;
 	int		j;
@@ -61,44 +77,40 @@ int	write_command(char **r, char *str, char c)
 
 int command_counter(char *str, char c)
 {
-    int i = -1;
-    int commands = 0;
-    char quote;
-    int in_word = 0;
+	int i = -1;
+	int commands = 0;
+	char quote;
+	int in_word = 0;
 
-    while (str[++i])
-    {
-        if (str[i] && (str[i] == DQUOTES || str[i] == SQUOTES))
-        {
-            quote = str[i++];
-            jump_character(str, &i, quote, FALSE);
-            if (!in_word)
-            {
-                commands++;
-                in_word = 1;
-            }
-        }
-        else if (character_finder(str[i], c))
-        {
-            in_word = 0;
-        }
-        else if (!character_finder(str[i], c) && str[i] != ' ' && str[i] != '\t')
-        {
-            if (!in_word)
-            {
-                commands++;
-                in_word = 1;
-            }
-        }
-        else if (str[i] == ' ' || str[i] == '\t')
-        {
-            // No cambiar in_word aquí para manejar espacios dentro de palabras
-        }
-    }
-    return (commands);
+	while (str[++i])
+	{
+		if (str[i] && (str[i] == DQUOTES || str[i] == SQUOTES))
+		{
+			quote = str[i++];
+			jump_character(str, &i, quote, FALSE);
+			if (!in_word)
+			{
+				commands++;
+				in_word = 1;
+			}
+		}
+		else if (character_finder(str[i], c))
+		{
+			in_word = 0;
+		}
+		else if (!character_finder(str[i], c) && str[i] != ' ' && str[i] != '\t')
+		{
+			if (!in_word)
+			{
+				commands++;
+				in_word = 1;
+			}
+		}
+	}
+	return (commands);
 }
 
-char	**command_spliter(char const *s, char c)
+char **command_spliter(char const *s, char c)
 {
 	int		commands;
 	char	**list_commands;
