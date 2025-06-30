@@ -5,10 +5,11 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/01 18:11:15 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/06/25 13:17:43 by anadal-g         ###   ########.fr       */
+/*   Created: Invalid date        by                   #+#    #+#             */
+/*   Updated: 2025/06/30 13:01:44 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "../includes/minishell.h"
 
@@ -19,6 +20,9 @@ void show_lst(t_token **stack)
 	t_token		*aux;
 	int			i;
 	t_iofile	*io_aux;
+
+	if (!stack || !*stack)
+		return;
 
 	aux = *stack;
 	while (aux != NULL)
@@ -63,6 +67,8 @@ void show_lst(t_token **stack)
 
 static void init_shell(t_env **env_list, char **env)
 {
+	if (!env_list)
+		return;
 	ft_init_env(env_list, env);
 	if (*env_list)
 		(*env_list)->last_out = 0;
@@ -71,20 +77,32 @@ static void init_shell(t_env **env_list, char **env)
 
 static int process_input(char *input, t_token **tokens, t_env **env_list)
 {
-	if (!input)
+	char *trimmed;
+
+	if (!input || !tokens || !env_list)
 		return (0);
-	
+
+	// Trim whitespace and check if empty
+	trimmed = ft_strtrim(input, " \t\n");
+	if (!trimmed || !*trimmed)
+	{
+		if (trimmed)
+			free(trimmed);
+		return (1); // Continue shell, don't exit
+	}
+	free(trimmed);
+
 	if (!validate_pipe_syntax(input))
 	{
 		if (*env_list)
 			(*env_list)->last_out = 2;
 		return (1);
 	}
-	
+
 	add_history(input);
 	free_tokens(tokens);
 	create_tokens(input, tokens);
-	
+
 	if (!*tokens)
 		return (1);
 		
@@ -104,23 +122,33 @@ int main(int ac, char **av, char **env)
 
 	(void)ac;
 	(void)av;
-	
+
 	tokens = ft_calloc(1, sizeof(t_token *));
 	env_list = ft_calloc(1, sizeof(t_env *));
-	
+
 	if (!tokens || !env_list)
 		return (1);
 		
 	init_shell(env_list, env);
-	
+
 	while (1)
 	{
+		g_signal_received = 0; // Reset signal flag
 		input = readline("minishell$ ");
 		
+		// Handle Ctrl+D (EOF)
 		if (!input)
 		{
 			printf("exit\n");
 			break;
+		}
+		
+		// Handle Ctrl+C
+		if (g_signal_received == SIGINT)
+		{
+			if (*env_list)
+				(*env_list)->last_out = 130;
+			g_signal_received = 0;
 		}
 		
 		if (!process_input(input, tokens, env_list))
@@ -128,7 +156,7 @@ int main(int ac, char **av, char **env)
 			
 		free(input);
 	}
-	
+
 	free_tokens(tokens);
 	free_env(env_list);
 	free(tokens);
