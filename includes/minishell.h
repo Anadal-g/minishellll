@@ -6,7 +6,7 @@
 /*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 18:11:12 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/06/30 13:16:34 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/07/02 13:14:31 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ extern int g_signal_received;
 /* Main functions */
 void	show_lst(t_token **stack);
 void	signal_input(void);
+void signal_child(void);
 
 /*===========================================*/
 /*                BUILTINS                   */

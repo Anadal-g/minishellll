@@ -6,7 +6,7 @@
 /*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 12:28:31 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/06/02 12:58:32 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/07/02 13:22:15 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,6 @@ void	last_child(t_token *token, t_env **env, int *fd)
 			
 		setup_last_child(token, *env, fd_in, fd_out);
 	}
-	
-	// En el proceso padre
 	close(fd[0]);
 	close(fd[1]);
 }
