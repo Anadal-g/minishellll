@@ -6,7 +6,7 @@
 /*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 12:13:21 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/06/30 13:02:09 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/06/30 13:14:53 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,11 +114,24 @@ void exe_one_cmd(t_token *token, t_env **env)
 
 	pid = fork();
 	if (pid < 0)
-		exit_fork_pipe(FORK);
+	{
+		perror("fork");
+		if (*env)
+			(*env)->last_out = 1;
+		return;
+	}
+	
 	if (pid == 0)
 		child_process(token, env);
 
-	waitpid(pid, &status, 0);
+	// Parent process waits for child
+	if (waitpid(pid, &status, 0) == -1)
+	{
+		perror("waitpid");
+		if (*env)
+			(*env)->last_out = 1;
+		return;
+	}
 
 	if (WIFEXITED(status))
 		(*env)->last_out = WEXITSTATUS(status);

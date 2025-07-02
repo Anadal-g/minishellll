@@ -6,7 +6,7 @@
 /*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 12:37:44 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/06/30 13:02:03 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/06/30 13:14:46 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,10 +98,13 @@ char *get_path(char *cmd, t_env **env)
 		
 	path_cmd = search_in_path(cmd, path_list);
 
-	// Free path_list
+	// Free path_list properly
 	i = 0;
 	while (path_list[i])
-		free(path_list[i++]);
+	{
+		free(path_list[i]);
+		i++;
+	}
 	free(path_list);
 
 	return (path_cmd);

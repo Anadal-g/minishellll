@@ -6,22 +6,22 @@
 /*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 17:20:05 by mmendiol          #+#    #+#             */
-/*   Updated: 2025/06/25 13:20:54 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/07/02 12:25:24 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static int is_n_flag(char *arg)
+static int is_n_flag(char *str)
 {
 	int i;
-	
-	if (!arg || arg[0] != '-' || arg[1] != 'n')
+
+	if (!str || str[0] != '-' || !str[1])
 		return (0);
-	i = 2;
-	while (arg[i])
+	i = 1;
+	while (str[i])
 	{
-		if (arg[i] != 'n')
+		if (str[i] != 'n')
 			return (0);
 		i++;
 	}
@@ -32,19 +32,17 @@ int do_echo(t_token *token)
 {
 	int i;
 	int newline;
-	
+
 	if (!token || !token->tokens)
-		return (1);
+		return (0);
 		
-	i = 1;
 	newline = 1;
-	
+	i = 1;
 	while (token->tokens[i] && is_n_flag(token->tokens[i]))
 	{
 		newline = 0;
 		i++;
 	}
-	
 	while (token->tokens[i])
 	{
 		printf("%s", token->tokens[i]);
@@ -52,9 +50,7 @@ int do_echo(t_token *token)
 			printf(" ");
 		i++;
 	}
-	
 	if (newline)
 		printf("\n");
-		
 	return (0);
 }
