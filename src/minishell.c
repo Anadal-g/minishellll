@@ -6,7 +6,7 @@
 /*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/06/30 13:01:44 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/07/07 12:18:38 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,6 @@ static int process_input(char *input, t_token **tokens, t_env **env_list)
 
 	if (!input || !tokens || !env_list)
 		return (0);
-
 	// Trim whitespace and check if empty
 	trimmed = ft_strtrim(input, " \t\n");
 	if (!trimmed || !*trimmed)
@@ -91,24 +90,19 @@ static int process_input(char *input, t_token **tokens, t_env **env_list)
 		return (1); // Continue shell, don't exit
 	}
 	free(trimmed);
-
 	if (!validate_pipe_syntax(input))
 	{
 		if (*env_list)
 			(*env_list)->last_out = 2;
 		return (1);
 	}
-
 	add_history(input);
 	free_tokens(tokens);
 	create_tokens(input, tokens);
-
 	if (!*tokens)
 		return (1);
-		
 	if (!quotes_handler(tokens, input))
 		return (1);
-		
 	lexerize(tokens, *env_list);
 	executor(*tokens, env_list);
 	return (1);

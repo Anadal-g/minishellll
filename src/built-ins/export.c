@@ -6,7 +6,7 @@
 /*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 16:59:23 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/07/04 13:18:13 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/07/07 12:38:35 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,8 +149,17 @@ static int export_variable(char *arg, t_env **env)
 	else if (!existing)
 	{
 		new_env = ft_calloc(1, sizeof(t_env));
+		if (!new_env)
+		{
+			free(name);
+			free(value);
+			return (1);
+		}
 		new_env->name = name;
 		new_env->value = value;
+		new_env->next = NULL;
+		new_env->prev = NULL;
+		new_env->last_out = 0;
 		ft_addback_env(env, new_env);
 	}
 	else
@@ -184,5 +193,6 @@ int do_export(t_token *token, t_env **env)
 			exit_status = 1;
 		i++;
 	}
+	
 	return (exit_status);
 }

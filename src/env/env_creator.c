@@ -5,10 +5,11 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/08/07 13:15:04 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/06/25 13:49:03 by anadal-g         ###   ########.fr       */
+/*   Created: Invalid date        by                   #+#    #+#             */
+/*   Updated: 2025/07/07 12:26:39 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "../../includes/minishell.h"
 
@@ -37,11 +38,56 @@ t_env *ft_create_env_node(char *env_var)
 	return (new_node);
 }
 
+static void create_minimal_env(t_env **env_list)
+{
+	t_env *new_env;
+	char *pwd;
+	
+	// Create PWD
+	pwd = getcwd(NULL, 0);
+	if (pwd)
+	{
+		new_env = ft_calloc(1, sizeof(t_env));
+		if (new_env)
+		{
+			new_env->name = ft_strdup("PWD");
+			new_env->value = pwd;
+			new_env->last_out = 0;
+			ft_addback_env(env_list, new_env);
+		}
+		else
+			free(pwd);
+	}
+	
+	// Create SHLVL=1
+	new_env = ft_calloc(1, sizeof(t_env));
+	if (new_env)
+	{
+		new_env->name = ft_strdup("SHLVL");
+		new_env->value = ft_strdup("1");
+		new_env->last_out = 0;
+		ft_addback_env(env_list, new_env);
+	}
+	
+	// Create _=/usr/bin/env (this is what bash sets when started with env -i)
+	new_env = ft_calloc(1, sizeof(t_env));
+	if (new_env)
+	{
+		new_env->name = ft_strdup("_");
+		new_env->value = ft_strdup("/usr/bin/env");
+		new_env->last_out = 0;
+		ft_addback_env(env_list, new_env);
+	}
+}
+
 void ft_init_env(t_env **env_list, char **env)
 {
 	int		i;
 	t_env	*new_env;
 
+	if (!env_list)
+		return;
+		
 	i = 0;
 	while (env && env[i])
 	{
@@ -51,16 +97,32 @@ void ft_init_env(t_env **env_list, char **env)
 		i++;
 	}
 	
-	// Ensure we have a basic environment
+	// If no environment was provided (env -i case), create minimal environment
 	if (!*env_list)
 	{
-		new_env = ft_calloc(1, sizeof(t_env));
-		if (new_env)
+		create_minimal_env(env_list);
+	}
+	else
+	{
+		// Ensure SHLVL is properly incremented
+		t_env *shlvl_var = ft_find_env(*env_list, "SHLVL");
+		if (shlvl_var && shlvl_var->value)
 		{
-			new_env->name = ft_strdup("PWD");
-			new_env->value = getcwd(NULL, 0);
-			new_env->last_out = 0;
-			*env_list = new_env;
+			int current_shlvl = ft_atoi(shlvl_var->value);
+			free(shlvl_var->value);
+			shlvl_var->value = ft_itoa(current_shlvl + 1);
+		}
+		else if (!shlvl_var)
+		{
+			// Create SHLVL if it doesn't exist
+			new_env = ft_calloc(1, sizeof(t_env));
+			if (new_env)
+			{
+				new_env->name = ft_strdup("SHLVL");
+				new_env->value = ft_strdup("1");
+				new_env->last_out = 0;
+				ft_addback_env(env_list, new_env);
+			}
 		}
 	}
 }
