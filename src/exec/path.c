@@ -6,7 +6,7 @@
 /*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 12:37:44 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/06/30 13:14:46 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/07/04 13:02:02 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static int is_full_path(char *cmd)
 {
 	int	i;
 
-	if (!cmd)
+	if (!cmd || !*cmd)
 		return (0);
 	i = 0;
 	while (cmd[i])
@@ -34,11 +34,16 @@ static char *search_in_path(char *cmd, char **path_list)
 	char	*tmp;
 	int		i;
 
-	if (!cmd || !path_list)
+	if (!cmd || !*cmd || !path_list)
 		return (NULL);
 	i = 0;
 	while (path_list[i])
 	{
+		if (!path_list[i] || !*path_list[i])
+		{
+			i++;
+			continue;
+		}
 		tmp = ft_strjoin(path_list[i], "/");
 		if (!tmp)
 			return (NULL);
@@ -81,6 +86,13 @@ char *get_path(char *cmd, t_env **env)
 	int i;
 
 	if (!cmd || !*cmd || !env || !*env)
+		return (NULL);
+		
+	// Check for empty or whitespace-only command
+	i = 0;
+	while (cmd[i] && (cmd[i] == ' ' || cmd[i] == '\t'))
+		i++;
+	if (!cmd[i])
 		return (NULL);
 		
 	// If it's an absolute or relative path

@@ -6,26 +6,89 @@
 /*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 16:59:23 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/06/25 13:20:06 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/07/04 13:18:13 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-
-static void print_export_env(t_env *env)
+static int count_env_vars(t_env *env)
 {
+	int count;
 	t_env *current;
 	
+	count = 0;
 	current = env;
 	while (current)
 	{
-		printf("declare -x %s", current->name);
-		if (current->value)
-			printf("=\"%s\"", current->value);
-		printf("\n");
+		count++;
 		current = current->next;
 	}
+	return (count);
+}
+
+static t_env **create_env_array(t_env *env, int count)
+{
+	t_env **array;
+	t_env *current;
+	int i;
+	
+	array = malloc(sizeof(t_env *) * count);
+	if (!array)
+		return (NULL);
+	
+	current = env;
+	i = 0;
+	while (current && i < count)
+	{
+		array[i] = current;
+		current = current->next;
+		i++;
+	}
+	return (array);
+}
+
+static int compare_env_names(const void *a, const void *b)
+{
+	t_env *env_a;
+	t_env *env_b;
+	
+	env_a = *(t_env **)a;
+	env_b = *(t_env **)b;
+	
+	return (ft_strcmp(env_a->name, env_b->name));
+}
+
+static void print_export_env(t_env *env)
+{
+	t_env **env_array;
+	int count;
+	int i;
+	
+	if (!env)
+		return;
+		
+	count = count_env_vars(env);
+	if (count == 0)
+		return;
+		
+	env_array = create_env_array(env, count);
+	if (!env_array)
+		return;
+	
+	qsort(env_array, count, sizeof(t_env *), compare_env_names);
+	
+	i = 0;
+	while (i < count)
+	{
+		printf("declare -x %s", env_array[i]->name);
+		if (env_array[i]->value)
+			printf("=\"%s\"", env_array[i]->value);
+		printf("\n");
+		i++;
+	}
+	
+	free(env_array);
 }
 
 static int is_valid_identifier(char *str)
@@ -121,6 +184,5 @@ int do_export(t_token *token, t_env **env)
 			exit_status = 1;
 		i++;
 	}
-	
 	return (exit_status);
 }
