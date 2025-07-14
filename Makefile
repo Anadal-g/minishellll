@@ -1,4 +1,4 @@
-#NAME
+# NAME
 NAME = minishell
 
 # SOURCE FILES
@@ -14,9 +14,8 @@ SRC_FILES	=	minishell.c \
 				built-ins/env.c \
 				built-ins/exit.c \
 				built-ins/history.c \
-				env/env_creator.c \
+				env/env_manager.c \
 				env/env_utils.c \
-				env/shlvl.c \
 				exec/redirections_utils.c \
 				exec/executor.c \
 				exec/exec_errors.c \
@@ -46,39 +45,43 @@ SRC_FILES	=	minishell.c \
 
 SRC			=	$(addprefix $(SRC_DIR), $(SRC_FILES))
 
-#OBJECT FILES
+# OBJECT FILES
 OBJ_DIR		= objs/
 OBJ_FILES 	= $(SRC:$(SRC_DIR)%.c=$(OBJ_DIR)%.o)
 
-#COMPILER
+# COMPILER
 CC		= cc
-FLAGS	= -Wall -Wextra -Werror  -g3#-fsanitize=address
-LDFLAGS = -lreadline
+CFLAGS	= -Wall -Wextra -Werror -g3
+
+# Para sistemas con readline instalado vía Homebrew (como Mac M1/M2/M3)
+CFLAGS	+= -I/opt/homebrew/opt/readline/include
+LDFLAGS	= -L/opt/homebrew/opt/readline/lib -lreadline
+
 INCLUDE	= -I includes
 RM		= rm -rf
 LIBFT	= libft/libft.a
 
 # COLORS
-RED		=	\033[91;1m
-GREEN	=	\033[92;1m
-YELLOW	=	\033[93;1m
-BLUE	=	\033[94;1m
-PINK	=	\033[95;1m
-CLEAR	=	\033[0m
+RED		= \033[91;1m
+GREEN	= \033[92;1m
+YELLOW	= \033[93;1m
+BLUE	= \033[94;1m
+PINK	= \033[95;1m
+CLEAR	= \033[0m
 
-#MAKEFILE RULES
+# MAKEFILE RULES
 all: $(NAME)
 
-$(NAME) : $(OBJ_FILES)
+$(NAME): $(OBJ_FILES)
 	@make -sC libft
 	@echo "$(GREEN)\nCompiling the minishell program.$(CLEAR)"
-	@$(CC) $(FLAGS) $(OBJ_FILES) $(INCLUDE) $(LIBFT) $(LDFLAGS) -o $(NAME)
+	@$(CC) $(CFLAGS) $(OBJ_FILES) $(INCLUDE) $(LIBFT) $(LDFLAGS) -o $(NAME)
 	@echo "$(GREEN)	      [OK]\n$(CLEAR)$(GREEN)      	    Success!$(CLEAR)\n"
-	
+
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 	@mkdir -p $(@D)
-	$(CC) $(FLAGS) -c $< -o $@
-	
+	$(CC) $(CFLAGS) -c $< -o $@
+
 clean:
 	@echo "$(RED)\nRemoving compiled files.$(CLEAR)"
 	@$(RM) $(OBJ_DIR)
@@ -86,7 +89,7 @@ clean:
 	@echo "$(RED)	[OK]\n$(CLEAR)$(RED)      Success!$(CLEAR)\n"
 	@echo "$(RED)Object files removed correctly\n$(CLEAR)"
 
-fclean: 
+fclean:
 	@make clean >/dev/null 2>&1
 	@echo "$(RED)\nRemoving exec. files.$(CLEAR)"
 	@$(RM) $(NAME)

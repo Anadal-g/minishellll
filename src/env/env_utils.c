@@ -3,63 +3,42 @@
 /*                                                        :::      ::::::::   */
 /*   env_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
+/*   By: carolinamc <carolinamc@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 13:07:53 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/06/25 13:49:09 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/07/14 13:27:40 by carolinamc       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-char **env_to_array(t_env *env)
+t_env *ft_create_env_node(char *env_var)
 {
-	int     count = 0;
-	t_env   *tmp = env;
-	char    **env_array;
-	char    *var;
-	
-	while (tmp)
-	{
-		if (tmp->value)  // Only count variables with values
-			count++;
-		tmp = tmp->next;
-	}
-	env_array = malloc(sizeof(char *) * (count + 1));
-	if (!env_array)
+	t_env	*new_node;
+	char	*equal_sign;
+	new_node = ft_calloc(1, sizeof(t_env));
+	if (!new_node)
 		return (NULL);
-	tmp = env;
-	count = 0;
-	while (tmp)
+	equal_sign = ft_strchr(env_var, '=');
+	if (!equal_sign)
 	{
-		if (tmp->value)  // Only include variables with values
-		{
-			var = ft_strjoin(tmp->name, "=");
-			if (!var)
-			{
-				free_matrix(env_array);
-				return (NULL);
-			}
-			env_array[count] = ft_strjoin(var, tmp->value);
-			free(var);
-			if (!env_array[count])
-			{
-				free_matrix(env_array);
-				return (NULL);
-			}
-			count++;
-		}
-		tmp = tmp->next;
+		new_node->name = ft_strdup(env_var);
+		new_node->value = NULL;
 	}
-	env_array[count] = NULL;
-	return (env_array);
+	else
+	{
+		new_node->name = ft_substr(env_var, 0, equal_sign - env_var);
+		new_node->value = ft_strdup(equal_sign + 1);
+	}
+	new_node->prev = NULL;
+	new_node->next = NULL;
+	new_node->last_out = 0;
+	return (new_node);
 }
 
 t_env *ft_new_env(char *name, char *value)
 {
-	t_env	*new_env;
-
-	new_env = ft_calloc(1, sizeof(t_env));
+	t_env	*new_env = ft_calloc(1, sizeof(t_env));
 	if (new_env == 0)
 		return (NULL);
 	new_env->name = ft_strdup(name);
@@ -83,13 +62,12 @@ t_env *ft_new_env(char *name, char *value)
 	new_env->prev = NULL;
 	new_env->next = NULL;
 	new_env->last_out = 0;
-	return (new_env);
+	return(new_env);
 }
 
 void ft_addback_env(t_env **lst, t_env *new)
 {
 	t_env	*mover;
-
 	if (*lst == NULL)
 	{
 		*lst = new;
@@ -105,7 +83,6 @@ void ft_addback_env(t_env **lst, t_env *new)
 t_env *ft_find_env(t_env *env_list, char *name)
 {
 	t_env	*token;
-
 	token = env_list;
 	while (token != NULL && name != NULL)
 	{

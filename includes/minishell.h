@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
+/*   By: carolinamc <carolinamc@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 18:11:12 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/06/25 14:00:58 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/07/14 13:52:36 by carolinamc       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,14 +53,15 @@ int		do_exit(t_token *token, t_env **env);
 /*===========================================*/
 /*                   ENV                     */
 /*===========================================*/
-t_env	*ft_create_env_node(char *env_var);
 void	ft_init_env(t_env **env_list, char **env);
+char	**env_to_array(t_env *env);
+int		fill_env_array(t_env *env, char **env_array);
+void	set_shell_lvl(t_env **envp);
+t_env	*ft_create_env_node(char *env_var);
 t_env	*ft_new_env(char *name, char *value);
 void	ft_addback_env(t_env **lst, t_env *new);
 t_env	*ft_find_env(t_env *env_list, char *name);
 void	ft_del_env(t_env *env_node);
-char	**env_to_array(t_env *env);
-void	set_shell_lvl(t_env **envp);
 
 /*===========================================*/
 /*                   EXEC                    */
@@ -133,11 +134,12 @@ void	signal_input(void);
 /*===========================================*/
 /*                UTILS                      */
 /*===========================================*/
-int		character_finder(char c, char to_find);
+int		validate_input_syntax(char *input);
+int		validate_pipe_syntax(char *input);
+int		check_pipe(char *input, int *i, int in_quotes);
 int		is_redir(char *str, int i);
+int		character_finder(char c, char to_find);
 char	*ft_strndup(const char *s, size_t n);
 void	*ft_realloc(void *ptr, size_t old_size, size_t new_size);
-int		validate_pipe_syntax(char *input);
-int		validate_input_syntax(char *input);
 
 #endif
