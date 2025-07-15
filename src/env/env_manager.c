@@ -6,16 +6,17 @@
 /*   By: carolinamc <carolinamc@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 13:15:04 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/07/14 13:27:30 by carolinamc       ###   ########.fr       */
+/*   Updated: 2025/07/14 16:15:32 by carolinamc       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void ft_init_env(t_env **env_list, char **env) // Ensure we have a basic environment
+void	ft_init_env(t_env **env_list, char **env)
 {
 	int		i;
 	t_env	*new_env;
+
 	i = 0;
 	while (env && env[i])
 	{
@@ -39,9 +40,12 @@ void ft_init_env(t_env **env_list, char **env) // Ensure we have a basic environ
 
 char	**env_to_array(t_env *env)
 {
-	int		count = 0;
-	t_env	*tmp = env;
+	int		count;
+	t_env	*tmp;
 	char	**env_array;
+
+	count = 0;
+	tmp = env;
 	while (tmp)
 	{
 		if (tmp->value)
@@ -61,8 +65,10 @@ char	**env_to_array(t_env *env)
 
 int	fill_env_array(t_env *env, char **env_array)
 {
-	int		i = 0;
+	int		i;
 	char	*var;
+
+	i = 0;
 	while (env)
 	{
 		if (env->value)
@@ -82,31 +88,31 @@ int	fill_env_array(t_env *env, char **env_array)
 	return (1);
 }
 
-void set_shell_lvl(t_env **envp)
+void	set_shell_lvl(t_env **envp)
 {
-	t_env	*data = ft_find_env(*envp, "SHLVL");
+	t_env	*data;
 	int		nb;
 	char	*aux;
+
+	data = ft_find_env(*envp, "SHLVL");
 	if (data && data->value)
 	{
 		nb = ft_atoi(data->value);
 		aux = ft_itoa(nb + 1);
-		if (aux == NULL)
+		if (!aux)
 		{
 			perror("Error al asignar memoria para SHLVL");
-			return;
+			return ;
 		}
 		free(data->value);
 		data->value = aux;
+		return ;
 	}
-	else
+	data = ft_new_env("SHLVL", "1");
+	if (!data)
 	{
-		data = ft_new_env("SHLVL", "1");
-		if (!data)
-		{
-			perror("Memory Error");
-			return;
-		}
-		ft_addback_env(envp, data);
+		perror("Memory Error");
+		return ;
 	}
+	ft_addback_env(envp, data);
 }

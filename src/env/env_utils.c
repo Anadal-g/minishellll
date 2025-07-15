@@ -6,16 +6,17 @@
 /*   By: carolinamc <carolinamc@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/30 13:07:53 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/07/14 13:27:40 by carolinamc       ###   ########.fr       */
+/*   Updated: 2025/07/14 16:17:00 by carolinamc       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-t_env *ft_create_env_node(char *env_var)
+t_env	*ft_create_env_node(char *env_var)
 {
 	t_env	*new_node;
 	char	*equal_sign;
+
 	new_node = ft_calloc(1, sizeof(t_env));
 	if (!new_node)
 		return (NULL);
@@ -36,25 +37,23 @@ t_env *ft_create_env_node(char *env_var)
 	return (new_node);
 }
 
-t_env *ft_new_env(char *name, char *value)
+t_env	*ft_new_env(char *name, char *value)
 {
-	t_env	*new_env = ft_calloc(1, sizeof(t_env));
-	if (new_env == 0)
+	t_env	*new_env;
+
+	new_env = ft_calloc(1, sizeof(t_env));
+	if (!new_env)
 		return (NULL);
 	new_env->name = ft_strdup(name);
-	if (new_env->name == NULL)
-	{
-		free(new_env);
-		return (NULL);
-	}
-	if (value != NULL)
+	if (!new_env->name)
+		return (free(new_env), NULL);
+	if (value)
 	{
 		new_env->value = ft_strdup(value);
-		if (new_env->value == NULL)
+		if (!new_env->value)
 		{
 			free(new_env->name);
-			free(new_env);
-			return (NULL);
+			return (free(new_env), NULL);
 		}
 	}
 	else
@@ -62,12 +61,13 @@ t_env *ft_new_env(char *name, char *value)
 	new_env->prev = NULL;
 	new_env->next = NULL;
 	new_env->last_out = 0;
-	return(new_env);
+	return (new_env);
 }
 
-void ft_addback_env(t_env **lst, t_env *new)
+void	ft_addback_env(t_env **lst, t_env *new)
 {
 	t_env	*mover;
+
 	if (*lst == NULL)
 	{
 		*lst = new;
@@ -80,9 +80,10 @@ void ft_addback_env(t_env **lst, t_env *new)
 	mover->next = new;
 }
 
-t_env *ft_find_env(t_env *env_list, char *name)
+t_env	*ft_find_env(t_env *env_list, char *name)
 {
 	t_env	*token;
+
 	token = env_list;
 	while (token != NULL && name != NULL)
 	{
@@ -93,7 +94,7 @@ t_env *ft_find_env(t_env *env_list, char *name)
 	return (NULL);
 }
 
-void ft_del_env(t_env *env_node)
+void	ft_del_env(t_env *env_node)
 {
 	if (!env_node)
 	{
