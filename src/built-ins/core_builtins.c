@@ -3,17 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   core_builtins.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
+/*   By: carolinamc <carolinamc@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 21:01:25 by mmendiol          #+#    #+#             */
-/*   Updated: 2025/06/25 13:21:05 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/07/15 16:20:31 by carolinamc       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-
-int is_builtin(const char *command)
+int	is_builtin(const char *command)
 {
 	if (!command)
 		return (0);
@@ -34,14 +33,13 @@ int is_builtin(const char *command)
 	return (0);
 }
 
-void select_builtin(t_token **tokens, t_env **env, char *input)
+void	select_builtin(t_token **tokens, t_env **env, char *input)
 {
-	int exit_status;
-	
+	int	exit_status;
+
 	(void)input;
 	if (!tokens || !*tokens || !(*tokens)->tokens || !(*tokens)->tokens[0])
-		return;
-		
+		return ;
 	if (ft_strcmp((*tokens)->tokens[0], ECHO_TXT) == 0)
 		exit_status = do_echo(*tokens);
 	else if (ft_strcmp((*tokens)->tokens[0], CD_TXT) == 0)
@@ -58,7 +56,6 @@ void select_builtin(t_token **tokens, t_env **env, char *input)
 		exit_status = do_exit(*tokens, env);
 	else
 		exit_status = 127;
-		
 	if (*env)
 		(*env)->last_out = exit_status;
 }

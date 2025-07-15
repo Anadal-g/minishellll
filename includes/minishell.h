@@ -6,7 +6,7 @@
 /*   By: carolinamc <carolinamc@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 18:11:12 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/07/14 13:52:36 by carolinamc       ###   ########.fr       */
+/*   Updated: 2025/07/15 17:42:11 by carolinamc       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,15 +40,16 @@ void	signal_input(void);
 /*===========================================*/
 /*                BUILTINS                   */
 /*===========================================*/
-void	select_builtin(t_token **tokens, t_env **env, char *input);
-int		is_builtin(const char *command);
-int		do_echo(t_token *token);
-int		ft_cd(t_token *token, t_env **envp);
-int		do_pwd(void);
-int		do_export(t_token *token, t_env **env);
-int		do_unset(t_token *token, t_env **env);
-int		do_env(t_token *token, t_env *env);
-int		do_exit(t_token *token, t_env **env);
+int			handle_cd_path(char *path, char *old_pwd, t_env **envp);
+int			ft_cd(t_token *token, t_env **envp);
+int			is_builtin(const char *command);
+void		select_builtin(t_token **tokens, t_env **env, char *input);
+int			do_echo(t_token *token);
+int			do_env(t_token *token, t_env *env);
+int			do_pwd(void);
+int			do_export(t_token *token, t_env **env);
+int			do_unset(t_token *token, t_env **env);
+int			do_exit(t_token *token, t_env **env);
 
 /*===========================================*/
 /*                   ENV                     */
@@ -134,9 +135,9 @@ void	signal_input(void);
 /*===========================================*/
 /*                UTILS                      */
 /*===========================================*/
-int		validate_input_syntax(char *input);
+int		validate_initial_pipe(char *input);
 int		validate_pipe_syntax(char *input);
-int		check_pipe(char *input, int *i, int in_quotes);
+void	handle_quote_state(char current_char, int *in_quotes, char *quote_char);
 int		is_redir(char *str, int i);
 int		character_finder(char c, char to_find);
 char	*ft_strndup(const char *s, size_t n);

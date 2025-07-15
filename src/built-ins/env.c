@@ -3,21 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
+/*   By: carolinamc <carolinamc@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 16:58:03 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/06/25 13:20:44 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/07/15 13:31:51 by carolinamc       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-int do_env(t_token *token, t_env *env)
+int	do_env(t_token *token, t_env *env)
 {
-	t_env *current;
-	
+	t_env	*current;
+
 	(void)token;
-	
 	current = env;
 	while (current)
 	{
@@ -25,6 +24,5 @@ int do_env(t_token *token, t_env *env)
 			printf("%s=%s\n", current->name, current->value);
 		current = current->next;
 	}
-	
 	return (0);
 }

@@ -3,20 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
+/*   By: carolinamc <carolinamc@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 16:59:23 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/06/25 13:20:06 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/07/15 15:27:25 by carolinamc       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-
-static void print_export_env(t_env *env)
+static void	print_export_env(t_env *env)
 {
-	t_env *current;
-	
+	t_env	*current;
+
 	current = env;
 	while (current)
 	{
@@ -28,10 +27,10 @@ static void print_export_env(t_env *env)
 	}
 }
 
-static int is_valid_identifier(char *str)
+static int	is_valid_identifier(char *str)
 {
-	int i;
-	
+	int	i;
+
 	if (!str || !*str)
 		return (0);
 	if (!ft_isalpha(str[0]) && str[0] != '_')
@@ -46,14 +45,14 @@ static int is_valid_identifier(char *str)
 	return (1);
 }
 
-static int export_variable(char *arg, t_env **env)
+static int	export_variable(char *arg, t_env **env)
 {
-	char *equal_pos;
-	char *name;
-	char *value;
-	t_env *existing;
-	t_env *new_env;
-	
+	char	*equal_pos;
+	char	*name;
+	char	*value;
+	t_env	*existing;
+	t_env	*new_env;
+
 	equal_pos = ft_strchr(arg, '=');
 	if (equal_pos)
 	{
@@ -65,7 +64,6 @@ static int export_variable(char *arg, t_env **env)
 		name = ft_strdup(arg);
 		value = NULL;
 	}
-	
 	if (!is_valid_identifier(name))
 	{
 		ft_putstr_fd("minishell: export: `", STDERR_FILENO);
@@ -75,7 +73,6 @@ static int export_variable(char *arg, t_env **env)
 		free(value);
 		return (1);
 	}
-	
 	existing = ft_find_env(*env, name);
 	if (existing && value)
 	{
@@ -95,24 +92,21 @@ static int export_variable(char *arg, t_env **env)
 		free(name);
 		free(value);
 	}
-	
 	return (0);
 }
 
-int do_export(t_token *token, t_env **env)
+int	do_export(t_token *token, t_env **env)
 {
-	int i;
-	int exit_status;
-	
+	int	i;
+	int	exit_status;
+
 	if (!token || !token->tokens || !env)
 		return (1);
-		
 	if (!token->tokens[1])
 	{
 		print_export_env(*env);
 		return (0);
 	}
-	
 	exit_status = 0;
 	i = 1;
 	while (token->tokens[i])
@@ -121,6 +115,5 @@ int do_export(t_token *token, t_env **env)
 			exit_status = 1;
 		i++;
 	}
-	
 	return (exit_status);
 }
