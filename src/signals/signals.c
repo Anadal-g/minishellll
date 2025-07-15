@@ -6,7 +6,7 @@
 /*   By: carolinamc <carolinamc@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 15:10:05 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/07/14 13:28:55 by carolinamc       ###   ########.fr       */
+/*   Updated: 2025/07/14 16:17:46 by carolinamc       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
-void crtl_c(int sign)
+void	crtl_c(int sign)
 {
 	(void)sign;
 	g_signal_received = SIGINT;
@@ -24,7 +24,7 @@ void crtl_c(int sign)
 	rl_redisplay();
 }
 
-void signal_input(void)
+void	signal_input(void)
 {
 	signal(SIGINT, &crtl_c);
 	signal(SIGQUIT, SIG_IGN);
