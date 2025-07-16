@@ -6,7 +6,7 @@
 /*   By: carolinamc <carolinamc@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 16:59:23 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/07/15 15:27:25 by carolinamc       ###   ########.fr       */
+/*   Updated: 2025/07/16 12:37:36 by carolinamc       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,53 +45,59 @@ static int	is_valid_identifier(char *str)
 	return (1);
 }
 
-static int	export_variable(char *arg, t_env **env)
+static int	extract_variable_data(char *arg, char **name, char **value)
 {
 	char	*equal_pos;
+
+	equal_pos = ft_strchr(arg, '=');
+	if (equal_pos)
+	{
+		*name = ft_substr(arg, 0, equal_pos - arg);
+		*value = ft_strdup(equal_pos + 1);
+	}
+	else
+	{
+		*name = ft_strdup(arg);
+		*value = NULL;
+	}
+	if (!is_valid_identifier(*name))
+	{
+		ft_putstr_fd("minishell: export: `", STDERR_FILENO);
+		ft_putstr_fd(arg, STDERR_FILENO);
+		ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
+		free(*name);
+		free(*value);
+		return (0);
+	}
+	return (1);
+}
+
+static int	export_variable(char *arg, t_env **env)
+{
 	char	*name;
 	char	*value;
 	t_env	*existing;
 	t_env	*new_env;
 
-	equal_pos = ft_strchr(arg, '=');
-	if (equal_pos)
-	{
-		name = ft_substr(arg, 0, equal_pos - arg);
-		value = ft_strdup(equal_pos + 1);
-	}
-	else
-	{
-		name = ft_strdup(arg);
-		value = NULL;
-	}
-	if (!is_valid_identifier(name))
-	{
-		ft_putstr_fd("minishell: export: `", STDERR_FILENO);
-		ft_putstr_fd(arg, STDERR_FILENO);
-		ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
-		free(name);
-		free(value);
+	if (!extract_variable_data(arg, &name, &value))
 		return (1);
-	}
 	existing = ft_find_env(*env, name);
-	if (existing && value)
+	if (existing)
 	{
-		free(existing->value);
-		existing->value = value;
+		if (value)
+		{
+			free(existing->value);
+			existing->value = value;
+		}
+		else
+			free(value);
 		free(name);
+		return (0);
 	}
-	else if (!existing)
-	{
-		new_env = ft_calloc(1, sizeof(t_env));
-		new_env->name = name;
-		new_env->value = value;
-		ft_addback_env(env, new_env);
-	}
-	else
-	{
-		free(name);
-		free(value);
-	}
+	new_env = ft_calloc(1, sizeof(t_env));
+	new_env->name = name;
+	new_env->value = value;
+	ft_addback_env(env, new_env);
 	return (0);
 }
 
