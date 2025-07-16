@@ -6,7 +6,7 @@
 /*   By: carolinamc <carolinamc@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 18:11:12 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/07/15 17:42:11 by carolinamc       ###   ########.fr       */
+/*   Updated: 2025/07/16 13:40:58 by carolinamc       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,14 @@
 # include <errno.h>
 
 /* Global variable for signal handling */
-extern int g_signal_received;
+extern int	g_signal_received;
 
-/* Main functions */
+/*===========================================*/
+/*                  MAIN                     */
+/*===========================================*/
 void	show_lst(t_token **stack);
-void	signal_input(void);
+void	minishell_loop(t_token **tokens, t_env **env_list);
+int		main(int ac, char **av, char **env);
 
 /*===========================================*/
 /*                BUILTINS                   */
@@ -78,7 +81,7 @@ void	child_aux(t_token *token, t_env *env, int fd_in, int fd_out, int is_piped);
 int		open_infile(t_iofile *infiles);
 int		open_outfile(t_iofile *outfiles);
 char	*heredoc(char *delimiter);
-enum e_iotype	get_redirection_type(char *token);
+enum	e_iotype	get_redirection_type(char *token);
 void	add_iofile(t_iofile **list, char *filename, enum e_iotype type);
 char	*get_path(char *cmd, t_env **env);
 void	setup_child_io(int fd_in, int fd_out);

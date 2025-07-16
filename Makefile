@@ -4,7 +4,8 @@ NAME = minishell
 # SOURCE FILES
 SRC_DIR		=	src/
 
-SRC_FILES	=	minishell.c \
+SRC_FILES	=	main/minishell.c \
+				main/utils_main.c \
 				built-ins/core_builtins.c \
 				built-ins/echo.c \
 				built-ins/cd.c \
