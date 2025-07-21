@@ -6,7 +6,7 @@
 /*   By: carolinamc <carolinamc@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 19:39:07 by mmendiol          #+#    #+#             */
-/*   Updated: 2025/07/21 13:18:36 by carolinamc       ###   ########.fr       */
+/*   Updated: 2025/07/21 13:41:49 by carolinamc       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,11 +54,66 @@ void	add_node_tokens(t_token **stack_tokens, char **splited_tokens)
 	}
 }
 
+// void	create_tokens(char *input, t_token **tokens)
+// {
+// 	char	**tokens_splited;
+// 	char	*trimmed;
+// 	int		i;
+
+// 	if (!input || !tokens)
+// 	{
+// 		if (tokens)
+// 			ft_putstr_fd("Error\n", STDERR_FILENO);
+// 		return ;
+// 	}
+// 	trimmed = ft_strtrim(input, " \t\n");
+// 	if (!trimmed || !*trimmed)
+// 	{
+// 		if (trimmed)
+// 			free(trimmed);
+// 		return ;
+// 	}
+// 	free(trimmed);
+// 	tokens_splited = command_spliter(input, PIPE);
+// 	if (!tokens_splited)
+// 		return ;
+// 	i = 0;
+// 	while (tokens_splited[i])
+// 	{
+// 		if (!validate_command_not_empty(tokens_splited[i]))
+// 		{
+// 			ft_putstr_fd("minishell:error: empty command\n", STDERR_FILENO);
+// 			free_matrix(tokens_splited);
+// 			return ;
+// 		}
+// 		i++;
+// 	}
+// 	add_node_tokens(tokens, tokens_splited);
+// 	free_matrix(tokens_splited);
+// }
+
+static int	validate_tokens_splited(char **tokens_splited)
+{
+	int	i;
+
+	i = 0;
+	while (tokens_splited[i])
+	{
+		if (!validate_command_not_empty(tokens_splited[i]))
+		{
+			ft_putstr_fd("minishell:error: empty command\n", STDERR_FILENO);
+			free_matrix(tokens_splited);
+			return (0);
+		}
+		i++;
+	}
+	return (1);
+}
+
 void	create_tokens(char *input, t_token **tokens)
 {
 	char	**tokens_splited;
 	char	*trimmed;
-	int		i;
 
 	if (!input || !tokens)
 	{
@@ -77,17 +132,8 @@ void	create_tokens(char *input, t_token **tokens)
 	tokens_splited = command_spliter(input, PIPE);
 	if (!tokens_splited)
 		return ;
-	i = 0;
-	while (tokens_splited[i])
-	{
-		if (!validate_command_not_empty(tokens_splited[i]))
-		{
-			ft_putstr_fd("minishell:error: empty command\n", STDERR_FILENO);
-			free_matrix(tokens_splited);
-			return ;
-		}
-		i++;
-	}
+	if (!validate_tokens_splited(tokens_splited))
+		return ;
 	add_node_tokens(tokens, tokens_splited);
 	free_matrix(tokens_splited);
 }
