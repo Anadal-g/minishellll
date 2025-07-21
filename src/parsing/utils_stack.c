@@ -3,19 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   utils_stack.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
+/*   By: carolinamc <carolinamc@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 17:02:31 by mmendiol          #+#    #+#             */
-/*   Updated: 2025/06/25 13:29:09 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/07/21 16:03:40 by carolinamc       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static int validate_command_syntax(char *command)
+static int	validate_command_syntax(char *command)
 {
-	int i = 0;
-	
+	int	i;
+
+	i = 0;
 	if (!command || !*command)
 		return (0);
 	while (command[i])
@@ -27,9 +28,10 @@ static int validate_command_syntax(char *command)
 			i++;
 			while (command[i] && (command[i] == ' ' || command[i] == '\t'))
 				i++;
-			if (!command[i] || command[i] == '<' || command[i] == '>' || command[i] == '|')
+			if (!command[i] || command[i] == '<'
+				|| command[i] == '>' || command[i] == '|')
 			{
-				ft_putstr_fd("minishell: syntax error near unexpected token\n", STDERR_FILENO);
+				ft_putstr_fd("minishell: unexpected token\n", STDERR_FILENO);
 				return (0);
 			}
 		}
@@ -39,20 +41,19 @@ static int validate_command_syntax(char *command)
 	return (1);
 }
 
-t_token *last_node(t_token *lst)
+t_token	*last_node(t_token *lst)
 {
 	while (lst && lst->next != NULL)
 		lst = lst->next;
 	return (lst);
 }
 
-void add_node_back(t_token **stack, t_token *new)
+void	add_node_back(t_token **stack, t_token *new)
 {
-	t_token *aux;
+	t_token	*aux;
 
 	if (!stack || !new)
-		return;
-		
+		return ;
 	aux = last_node(*stack);
 	if (aux)
 	{
@@ -64,9 +65,9 @@ void add_node_back(t_token **stack, t_token *new)
 		*stack = new;
 }
 
-t_token *create_node(int id, char *command)
+t_token	*create_node(int id, char *command)
 {
-	t_token *tokens;
+	t_token	*tokens;
 
 	if (!command || !*command)
 		return (NULL);

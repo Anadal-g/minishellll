@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   errors.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
+/*   By: carolinamc <carolinamc@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/11 12:24:03 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/06/25 13:29:17 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/07/21 13:44:08 by carolinamc       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void show_error(char *str, char *cmd_file)
+void	show_error(char *str, char *cmd_file)
 {
 	char	*msg;
 
@@ -25,7 +25,7 @@ void show_error(char *str, char *cmd_file)
 	}
 }
 
-void show_error_reverse(char *cmd_file, char *str)
+void	show_error_reverse(char *cmd_file, char *str)
 {
 	char	*msg;
 
