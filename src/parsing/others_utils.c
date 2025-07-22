@@ -6,7 +6,7 @@
 /*   By: carolinamc <carolinamc@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 17:02:31 by mmendiol          #+#    #+#             */
-/*   Updated: 2025/07/21 16:00:49 by carolinamc       ###   ########.fr       */
+/*   Updated: 2025/07/22 11:48:46 by carolinamc       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,4 +62,28 @@ void	read_till_character(char *input, int *start, int *counter, char c)
 			break ;
 		(*counter)++;
 	}
+}
+
+t_token	*last_node(t_token *lst)
+{
+	while (lst && lst->next != NULL)
+		lst = lst->next;
+	return (lst);
+}
+
+void	add_node_back(t_token **stack, t_token *new)
+{
+	t_token	*aux;
+
+	if (!stack || !new)
+		return ;
+	aux = last_node(*stack);
+	if (aux)
+	{
+		new->prev = aux;
+		new->next = NULL;
+		aux->next = new;
+	}
+	else
+		*stack = new;
 }

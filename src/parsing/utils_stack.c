@@ -6,7 +6,7 @@
 /*   By: carolinamc <carolinamc@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 17:02:31 by mmendiol          #+#    #+#             */
-/*   Updated: 2025/07/21 16:03:40 by carolinamc       ###   ########.fr       */
+/*   Updated: 2025/07/22 11:49:01 by carolinamc       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,28 +41,40 @@ static int	validate_command_syntax(char *command)
 	return (1);
 }
 
-t_token	*last_node(t_token *lst)
+static int	handle_command_allocation(t_token *tokens, char *command)
 {
-	while (lst && lst->next != NULL)
-		lst = lst->next;
-	return (lst);
+	tokens->command = ft_strdup(command);
+	if (!tokens->command)
+	{
+		free(tokens);
+		return (0);
+	}
+	return (1);
 }
 
-void	add_node_back(t_token **stack, t_token *new)
+static int	handle_redirections(t_token *tokens, char *command)
 {
-	t_token	*aux;
-
-	if (!stack || !new)
-		return ;
-	aux = last_node(*stack);
-	if (aux)
+	tokens->tokens = redir_divisor(command);
+	if (!tokens->tokens)
 	{
-		new->prev = aux;
-		new->next = NULL;
-		aux->next = new;
+		free(tokens->command);
+		free(tokens);
+		return (0);
 	}
-	else
-		*stack = new;
+	parse_redirections(tokens);
+	return (1);
+}
+
+static int	handle_split(t_token *tokens, char *command)
+{
+	tokens->tokens = ft_split(command, ' ');
+	if (!tokens->tokens)
+	{
+		free(tokens->command);
+		free(tokens);
+		return (0);
+	}
+	return (1);
 }
 
 t_token	*create_node(int id, char *command)
@@ -77,32 +89,17 @@ t_token	*create_node(int id, char *command)
 	if (!tokens)
 		return (NULL);
 	tokens->id = id;
-	tokens->command = ft_strdup(command);
-	if (!tokens->command)
-	{
-		free(tokens);
+	if (!handle_command_allocation(tokens, command))
 		return (NULL);
-	}
 	if (ft_strchr(command, '<') || ft_strchr(command, '>'))
 	{
-		tokens->tokens = redir_divisor(command);
-		if (!tokens->tokens)
-		{
-			free(tokens->command);
-			free(tokens);
+		if (!handle_redirections(tokens, command))
 			return (NULL);
-		}
-		parse_redirections(tokens);
 	}
 	else
 	{
-		tokens->tokens = ft_split(command, ' ');
-		if (!tokens->tokens)
-		{
-			free(tokens->command);
-			free(tokens);
+		if (!handle_split(tokens, command))
 			return (NULL);
-		}
 	}
 	tokens->prev = NULL;
 	tokens->next = NULL;
