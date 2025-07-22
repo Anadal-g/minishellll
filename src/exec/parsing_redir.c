@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_redir.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
+/*   By: carolinamc <carolinamc@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 17:01:43 by mmendiol          #+#    #+#             */
-/*   Updated: 2025/06/25 13:43:59 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/07/22 13:28:06 by carolinamc       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void rebuild_command(t_token *token)
+void	rebuild_command(t_token *token)
 {
 	int		i;
 	char	*new_command;
@@ -37,11 +37,12 @@ void rebuild_command(t_token *token)
 	token->command = new_command;
 }
 
-void detect_redirections(t_token *token)
+void	detect_redirections(t_token *token)
 {
-	int i = 0;
-	enum e_iotype type;
+	int				i;
+	enum e_iotype	type;
 
+	i = 0;
 	while (token->tokens[i])
 	{
 		type = get_redirection_type(token->tokens[i]);

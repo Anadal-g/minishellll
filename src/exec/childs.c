@@ -3,39 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   childs.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
+/*   By: carolinamc <carolinamc@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 12:13:47 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/06/25 13:34:24 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/07/22 13:08:17 by carolinamc       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void child_aux(t_token *token, t_env *env, int fd_in, int fd_out, int is_piped)
+void	handle_builtin(t_token *token, t_env *env, int is_piped)
 {
-	char *path;
-	char **env_array;
+	t_token	*tmp;
+	t_env	*tmp_env;
 
-	if (!token || !token->tokens || !token->tokens[0])
-	{
-		ft_putstr_fd("minishell: invalid token\n", STDERR_FILENO);
-		exit(1);
-	}
-	
-	setup_child_io(fd_in, fd_out);
-	
-	if (is_builtin(token->tokens[0]))
-	{
-		t_token *tmp = token;
-		t_env *tmp_env = env;
-		select_builtin(&tmp, &tmp_env, token->command);
-		if (is_piped)
-			exit(tmp_env->last_out);
-		return;
-	}
-	
-	path = handle_command_path(token, env, &env_array);
+	tmp = token;
+	tmp_env = env;
+	select_builtin(&tmp, &tmp_env, token->command);
+	if (is_piped)
+		exit(tmp_env->last_out);
+}
+
+void	exec_command(char *path, t_token *token, char **env_array)
+{
 	if (!path)
 	{
 		ft_putstr_fd("minishell: ", STDERR_FILENO);
@@ -45,7 +35,6 @@ void child_aux(t_token *token, t_env *env, int fd_in, int fd_out, int is_piped)
 			free_matrix(env_array);
 		exit(127);
 	}
-	
 	execve(path, token->tokens, env_array);
 	perror("execve");
 	free(path);
@@ -54,7 +43,27 @@ void child_aux(t_token *token, t_env *env, int fd_in, int fd_out, int is_piped)
 	exit(126);
 }
 
-void wait_childs(pid_t final_pid, int *last_out)
+void	child_aux(t_token *token, t_env *env, int fds[2], int is_piped)
+{
+	char	*path;
+	char	**env_array;
+
+	if (!token || !token->tokens || !token->tokens[0])
+	{
+		ft_putstr_fd("minishell: invalid token\n", STDERR_FILENO);
+		exit(1);
+	}
+	setup_child_io(fds[0], fds[1]);
+	if (is_builtin(token->tokens[0]))
+	{
+		handle_builtin(token, env, is_piped);
+		return ;
+	}
+	path = handle_command_path(token, env, &env_array);
+	exec_command(path, token, env_array);
+}
+
+void	wait_childs(pid_t final_pid, int *last_out)
 {
 	pid_t	current_pid;
 	int		status;

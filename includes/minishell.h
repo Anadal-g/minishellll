@@ -6,7 +6,7 @@
 /*   By: carolinamc <carolinamc@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 18:11:12 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/07/16 13:40:58 by carolinamc       ###   ########.fr       */
+/*   Updated: 2025/07/22 14:03:53 by carolinamc       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ void	first_child(t_token *token, t_env **env, int *fd);
 void	mid_child(t_token *token, t_env **env, int *fd, int *new);
 void	last_child(t_token *token, t_env **env, int *fd);
 void	wait_childs(pid_t final_pid, int *last_out);
-void	child_aux(t_token *token, t_env *env, int fd_in, int fd_out, int is_piped);
+void	child_aux(t_token *token, t_env *env, int fds[2], int is_piped);
 int		open_infile(t_iofile *infiles);
 int		open_outfile(t_iofile *outfiles);
 char	*heredoc(char *delimiter);
@@ -88,6 +88,8 @@ void	setup_child_io(int fd_in, int fd_out);
 char	*handle_command_path(t_token *token, t_env *env, char ***env_array);
 void	exit_fork_pipe(int type);
 int		validate_token(t_token *token);
+int		handle_trim_and_store(char *substr, char **dest);
+void	read_till_character_redir(char *input, int *start, int *counter);
 
 /*===========================================*/
 /*               PARSING                     */

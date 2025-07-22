@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   path.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
+/*   By: carolinamc <carolinamc@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 12:37:44 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/06/30 13:02:03 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/07/22 13:29:33 by carolinamc       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static int is_full_path(char *cmd)
+static int	is_full_path(char *cmd)
 {
 	int	i;
 
@@ -28,7 +28,7 @@ static int is_full_path(char *cmd)
 	return (0);
 }
 
-static char *search_in_path(char *cmd, char **path_list)
+static char	*search_in_path(char *cmd, char **path_list)
 {
 	char	*path;
 	char	*tmp;
@@ -54,7 +54,7 @@ static char *search_in_path(char *cmd, char **path_list)
 	return (NULL);
 }
 
-static char **get_path_list(t_env **env)
+static char	**get_path_list(t_env **env)
 {
 	t_env	*current;
 
@@ -74,35 +74,27 @@ static char **get_path_list(t_env **env)
 	return (NULL);
 }
 
-char *get_path(char *cmd, t_env **env)
+char	*get_path(char *cmd, t_env **env)
 {
-	char **path_list;
-	char *path_cmd;
-	int i;
+	char	**path_list;
+	char	*path_cmd;
+	int		i;
 
 	if (!cmd || !*cmd || !env || !*env)
 		return (NULL);
-		
-	// If it's an absolute or relative path
 	if (is_full_path(cmd))
 	{
 		if (access(cmd, F_OK) == 0 && access(cmd, X_OK) == 0)
 			return (ft_strdup(cmd));
 		return (NULL);
 	}
-
-	// Search in PATH
 	path_list = get_path_list(env);
 	if (!path_list)
 		return (NULL);
-		
 	path_cmd = search_in_path(cmd, path_list);
-
-	// Free path_list
 	i = 0;
 	while (path_list[i])
 		free(path_list[i++]);
 	free(path_list);
-
 	return (path_cmd);
 }
