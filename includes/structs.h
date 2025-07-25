@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   structs.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
+/*   By: carolinamc <carolinamc@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 13:29:16 by mmendiol          #+#    #+#             */
-/*   Updated: 2025/06/25 13:21:47 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/07/24 20:20:17 by carolinamc       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,5 +53,20 @@ struct s_env
 	t_env				*next;
 	int					last_out;
 };
+
+typedef struct s_pipe_fds
+{
+	int	prev_fd[2];
+	int	curr_fd[2];
+}	t_pipe_fds;
+
+typedef struct s_child_io_context
+{
+	int	fd_in;
+	int	fd_out;
+	int	prev_fd[2];
+	int	curr_fd[2];
+	int	is_last;
+}	t_child_io_context;
 
 #endif

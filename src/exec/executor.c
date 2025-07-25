@@ -6,7 +6,7 @@
 /*   By: carolinamc <carolinamc@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 12:24:16 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/07/22 11:59:10 by carolinamc       ###   ########.fr       */
+/*   Updated: 2025/07/25 12:42:40 by carolinamc       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,125 +37,54 @@ static void	one_command(t_token *token, t_env **env)
 		exe_one_cmd(token, env);
 }
 
-static void	execute_pipeline_child(t_token *current, t_env **env, int *prev_fd, int *curr_fd, int is_last)
+void	execute_pipeline_child(t_token *current, t_env **env,
+									t_pipe_fds *pipe_fds, int is_last)
 {
-	int	fd_in = STDIN_FILENO;
-	int	fd_out = STDOUT_FILENO;
-	
-	if (current->infile)
-	{
-		fd_in = open_infile(current->infile);
-		if (fd_in < 0)
-			exit(1);
-	}
-	else if (prev_fd[0] != -1)
-	{
-		fd_in = prev_fd[0];
-	}
-	if (current->outfile)
-	{
-		fd_out = open_outfile(current->outfile);
-		if (fd_out < 0)
-		{
-			if (fd_in != STDIN_FILENO)
-				close(fd_in);
-			exit(1);
-		}
-	}
-	else if (!is_last)
-	{
-		fd_out = curr_fd[1];
-	}
-	if (prev_fd[0] != -1 && fd_in != prev_fd[0])
-		close(prev_fd[0]);
-	if (prev_fd[1] != -1)
-		close(prev_fd[1]);
-	if (!is_last)
-	{
-		if (fd_out != curr_fd[1])
-			close(curr_fd[1]);
-		close(curr_fd[0]);
-	}
-	setup_child_io(fd_in, fd_out);
+	t_child_io_context	ctx;
+
+	ctx.prev_fd[0] = pipe_fds->prev_fd[0];
+	ctx.prev_fd[1] = pipe_fds->prev_fd[1];
+	ctx.curr_fd[0] = pipe_fds->curr_fd[0];
+	ctx.curr_fd[1] = pipe_fds->curr_fd[1];
+	ctx.is_last = is_last;
+	ctx.fd_in = handle_child_input_fd(current, ctx.prev_fd);
+	ctx.fd_out = handle_child_output_fd(current, ctx.curr_fd,
+			ctx.is_last, ctx.fd_in);
+	close_child_pipes(&ctx);
+	setup_child_io(ctx.fd_in, ctx.fd_out);
 	if (is_builtin(current->tokens[0]))
 	{
-		select_builtin(&current, env, current->command);
-		exit((*env)->last_out);
+		execute_child_builtin(current, env);
 	}
 	else
 	{
-		char *path;
-		char **env_array;
-		path = handle_command_path(current, *env, &env_array);
-		if (!path)
-		{
-			ft_putstr_fd("minishell: ", STDERR_FILENO);
-			ft_putstr_fd(current->tokens[0], STDERR_FILENO);
-			ft_putstr_fd(": command not found\n", STDERR_FILENO);
-			if (env_array)
-				free_matrix(env_array);
-			exit(127);
-		}
-		execve(path, current->tokens, env_array);
-		perror("execve");
-		free(path);
-		if (env_array)
-			free_matrix(env_array);
-		exit(126);
+		execute_child_external(current, env);
 	}
 }
 
 static void	two_or_more_cmds(t_token *tokens, t_env **env)
 {
 	t_token	*current;
-	int		prev_fd[2] = {-1, -1};
-	int		curr_fd[2];
-	pid_t	pid;
-	pid_t	last_pid = -1;
+	int		prev_fd[2];
+	pid_t	last_pid;
 
 	current = tokens;
+	prev_fd[0] = -1;
+	prev_fd[1] = -1;
+	last_pid = -1;
 	while (current)
 	{
-		if (current->next)
-		{
-			if (pipe(curr_fd) < 0)
-				exit_fork_pipe(PIPE);
-		}
-		pid = fork();
-		if (pid < 0)
-			exit_fork_pipe(FORK);
-		if (pid == 0)
-		{
-			execute_pipeline_child(current, env, prev_fd, curr_fd, !current->next);
-		}
-		if (prev_fd[0] != -1)
-		{
-			close(prev_fd[0]);
-			close(prev_fd[1]);
-		}
-		if (current->next)
-		{
-			prev_fd[0] = curr_fd[0];
-			prev_fd[1] = curr_fd[1];
-		}
-		else
-		{
-			last_pid = pid;
-		}
+		last_pid = handle_cmd_iteration(current, env, prev_fd);
 		current = current->next;
 	}
-	if (prev_fd[0] != -1)
-	{
-		close(prev_fd[0]);
-		close(prev_fd[1]);
-	}
+	close_pipe(prev_fd);
 	wait_childs(last_pid, &(*env)->last_out);
 }
 
 void	executor(t_token *tokens, t_env **env)
 {
 	int	cmd_count;
-	
+
 	if (!tokens)
 		return ;
 	cmd_count = count_tokens(tokens);

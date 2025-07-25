@@ -6,7 +6,7 @@
 /*   By: carolinamc <carolinamc@student.42.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 12:14:11 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/07/22 13:59:16 by carolinamc       ###   ########.fr       */
+/*   Updated: 2025/07/23 12:58:26 by carolinamc       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,4 +48,37 @@ int	handle_trim_and_store(char *substr, char **dest)
 		return (0);
 	*dest = trimmed;
 	return (1);
+}
+
+void	setup_child_io(int fd_in, int fd_out)
+{
+	if (fd_in != STDIN_FILENO)
+	{
+		dup2(fd_in, STDIN_FILENO);
+		close(fd_in);
+	}
+	if (fd_out != STDOUT_FILENO)
+	{
+		dup2(fd_out, STDOUT_FILENO);
+		close(fd_out);
+	}
+}
+
+char	*handle_command_path(t_token *token, t_env *env, char ***env_array)
+{
+	char	*path;
+
+	if (!token || !token->tokens || !token->tokens[0] || !env)
+		return (NULL);
+	*env_array = env_to_array(env);
+	if (!*env_array)
+		return (NULL);
+	path = get_path(token->tokens[0], &env);
+	if (!path)
+	{
+		free_matrix(*env_array);
+		*env_array = NULL;
+		return (NULL);
+	}
+	return (path);
 }

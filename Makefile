@@ -26,6 +26,9 @@ SRC_FILES	=	main/minishell.c \
 				exec/heredoc.c \
 				exec/manage_infile.c \
 				exec/manage_outfile.c \
+				exec/others_utils.c \
+				exec/more_utils.c \
+				exec/cmd_iteration.c \
 				exec/path.c \
 				exec/utils_exec.c \
 				exec/parsing_redir.c \
