@@ -1,0 +1,13 @@
+total 0
+drwxr-xr-x@  7 carolinamc  staff  224 Oct 27 10:38 .
+drwxr-xr-x  25 carolinamc  staff  800 Oct 27 10:37 ..
+-rw-r--r--@  1 carolinamc  staff    0 Oct 27 10:38 1
+-rw-r--r--@  1 carolinamc  staff    0 Oct 27 10:38 2
+-rw-r--r--@  1 carolinamc  staff    0 Oct 27 10:38 3
+-rw-r--r--@  1 carolinamc  staff    0 Oct 27 10:38 4
+drwxr-xr-x@  2 carolinamc  staff   64 Oct 27 10:38 test
+
+./test:
+total 0
+drwxr-xr-x@ 2 carolinamc  staff   64 Oct 27 10:38 .
+drwxr-xr-x@ 7 carolinamc  staff  224 Oct 27 10:38 ..

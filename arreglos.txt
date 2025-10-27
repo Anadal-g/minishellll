@@ -1,0 +1,5 @@
+cat | ls
+ls > "1"  -a >"2" -l > 3 -R >4 
+rm '"1" a' --> doble free
+ctrl C dentro del heredoc, deberia de salir
+        
