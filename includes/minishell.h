@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 18:11:12 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/07/02 13:14:31 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/10/28 21:36:33 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,12 @@
 /* Global variable for signal handling */
 extern int g_signal_received;
 
-/* Main functions */
-void	show_lst(t_token **stack);
-void	signal_input(void);
-void signal_child(void);
+/*===========================================*/
+/*                  MAIN                     */
+/*===========================================*/
+void		show_lst(t_token **stack);
+void		minishell_loop(t_token **tokens, t_env **env_list);
+int			main(int ac, char **av, char **env);
 
 /*===========================================*/
 /*                BUILTINS                   */
@@ -54,15 +56,15 @@ int		do_exit(t_token *token, t_env **env);
 /*===========================================*/
 /*                   ENV                     */
 /*===========================================*/
-t_env	*ft_create_env_node(char *env_var);
-void	ft_init_env(t_env **env_list, char **env);
-t_env	*ft_new_env(char *name, char *value);
-void	ft_addback_env(t_env **lst, t_env *new);
-t_env	*ft_find_env(t_env *env_list, char *name);
-void	ft_del_env(t_env *env_node);
-char	**env_to_array(t_env *env);
-void	set_shell_lvl(t_env **envp);
-
+void		ft_init_env(t_env **env_list, char **env);
+char		**env_to_array(t_env *env);
+int			fill_env_array(t_env *env, char **env_array);
+void		set_shell_lvl(t_env **envp);
+t_env		*ft_create_env_node(char *env_var);
+t_env		*ft_new_env(char *name, char *value);
+void		ft_addback_env(t_env **lst, t_env *new);
+t_env		*ft_find_env(t_env *env_list, char *name);
+void		ft_del_env(t_env *env_node);
 /*===========================================*/
 /*                   EXEC                    */
 /*===========================================*/
@@ -84,6 +86,32 @@ void	setup_child_io(int fd_in, int fd_out);
 char	*handle_command_path(t_token *token, t_env *env, char ***env_array);
 void	exit_fork_pipe(int type);
 int		validate_token(t_token *token);
+//PATH_NEW
+int is_full_path(char *cmd);
+char *build_full_path(char *dir, char *cmd);
+//REDIR_NEW
+void read_till_character_redir(char *input, int *start, int *counter);
+int process_operator_or_space(char **r, char *str, int *i, int *commands);
+char *process_word(char *str, int j, int i);
+//EXECUTOR_NEW
+int count_tokens(t_token *tokens);
+void one_command(t_token *token, t_env **env);
+int setup_pipeline_input(t_token *current, int *prev_fd, int *fd_in);
+int setup_pipeline_output(t_token *current, int *curr_fd, int *fd_out,
+	int is_last);
+void close_unused_pipes(int *prev_fd, int *curr_fd, int fd_in,
+	int fd_out, int is_last);
+void exec_pipeline_builtin(t_token *current, t_env **env);
+void exec_pipeline_external(t_token *current, t_env **env);
+void execute_pipeline_child(t_token *current, t_env **env, int *prev_fd,
+	int *curr_fd, int is_last);
+void handle_parent_pipes(int *prev_fd, int *curr_fd, int has_next);
+void two_or_more_cmds(t_token *tokens, t_env **env);
+void executor(t_token *tokens, t_env **env);
+
+
+
+
 
 /*===========================================*/
 /*               PARSING                     */
@@ -107,7 +135,7 @@ void	expander(char **tokens, t_env *env);
 void	free_list(t_token **stack);
 void	free_tokens(t_token **tokens);
 void	free_env(t_env **env);
-void	free_iofile(t_iofile *iofile);
+void	free_iofile(t_iofile *iofile); 
 void	lexerize_process(t_token *aux, t_env *env);
 void	lexerize(t_token **tokens, t_env *env);
 void	jump_character(char *str, int *counter, char c, int flag);
@@ -134,11 +162,13 @@ void	signal_input(void);
 /*===========================================*/
 /*                UTILS                      */
 /*===========================================*/
-int		character_finder(char c, char to_find);
-int		is_redir(char *str, int i);
-char	*ft_strndup(const char *s, size_t n);
-void	*ft_realloc(void *ptr, size_t old_size, size_t new_size);
-int		validate_pipe_syntax(char *input);
-int		validate_input_syntax(char *input);
+int			validate_initial_pipe(char *input);
+int			validate_pipe_syntax(char *input);
+void		handle_quote_state(char current_char, int *in_quotes,
+				char *quote_char);
+int			is_redir(char *str, int i);
+int			character_finder(char c, char to_find);
+char		*ft_strndup(const char *s, size_t n);
+void		*ft_realloc(void *ptr, size_t old_size, size_t new_size);
 
 #endif

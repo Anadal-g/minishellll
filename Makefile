@@ -4,7 +4,8 @@ NAME = minishell
 # SOURCE FILES
 SRC_DIR		=	src/
 
-SRC_FILES	=	minishell.c \
+SRC_FILES	=	main/minishell.c \
+				main/utils_main.c \
 				built-ins/core_builtins.c \
 				built-ins/echo.c \
 				built-ins/cd.c \
@@ -14,11 +15,11 @@ SRC_FILES	=	minishell.c \
 				built-ins/env.c \
 				built-ins/exit.c \
 				built-ins/history.c \
-				env/env_creator.c \
+				env/env_manager.c \
 				env/env_utils.c \
-				env/shlvl.c \
 				exec/redirections_utils.c \
 				exec/executor.c \
+				exec/executor_2.c \
 				exec/exec_errors.c \
 				exec/exec_one_cmd.c \
 				exec/childs.c \
@@ -27,9 +28,11 @@ SRC_FILES	=	minishell.c \
 				exec/manage_infile.c \
 				exec/manage_outfile.c \
 				exec/path.c \
+				exec/path_2.c \
 				exec/utils_exec.c \
 				exec/parsing_redir.c \
 				exec/redir.c \
+				exec/redir_2.c \
 				parsing/redir_utils.c \
 				parsing/quotes/quote_handler.c \
 				parsing/quotes/quote_parser.c \
@@ -41,7 +44,7 @@ SRC_FILES	=	minishell.c \
 				parsing/parsing.c \
 				parsing/utils_stack.c \
 				utils/utils.c \
-				utils/syntax_validation.c \
+				utils/syntax_pipe.c \
 				signals/signals.c 
 
 SRC			=	$(addprefix $(SRC_DIR), $(SRC_FILES))
