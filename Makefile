@@ -38,6 +38,7 @@ SRC_FILES	=	main/minishell.c \
 				parsing/quotes/quote_parser.c \
 				parsing/command_list.c \
 				parsing/errors.c \
+				parsing/other_utils.c \
 				parsing/expansor.c \
 				parsing/frees.c \
 				parsing/lexer.c \

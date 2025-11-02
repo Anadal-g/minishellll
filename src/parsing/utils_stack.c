@@ -3,19 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   utils_stack.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 17:02:31 by mmendiol          #+#    #+#             */
-/*   Updated: 2025/06/25 13:29:09 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/11/02 19:09:37 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static int validate_command_syntax(char *command)
+static int	validate_command_syntax(char *command)
 {
-	int i = 0;
-	
+	int	i;
+
+	i = 0;
 	if (!command || !*command)
 		return (0);
 	while (command[i])
@@ -27,9 +28,10 @@ static int validate_command_syntax(char *command)
 			i++;
 			while (command[i] && (command[i] == ' ' || command[i] == '\t'))
 				i++;
-			if (!command[i] || command[i] == '<' || command[i] == '>' || command[i] == '|')
+			if (!command[i] || command[i] == '<'
+				|| command[i] == '>' || command[i] == '|')
 			{
-				ft_putstr_fd("minishell: syntax error near unexpected token\n", STDERR_FILENO);
+				ft_putstr_fd("minishell: unexpected token\n", STDERR_FILENO);
 				return (0);
 			}
 		}
@@ -39,34 +41,45 @@ static int validate_command_syntax(char *command)
 	return (1);
 }
 
-t_token *last_node(t_token *lst)
+static int	handle_command_allocation(t_token *tokens, char *command)
 {
-	while (lst && lst->next != NULL)
-		lst = lst->next;
-	return (lst);
-}
-
-void add_node_back(t_token **stack, t_token *new)
-{
-	t_token *aux;
-
-	if (!stack || !new)
-		return;
-		
-	aux = last_node(*stack);
-	if (aux)
+	tokens->command = ft_strdup(command);
+	if (!tokens->command)
 	{
-		new->prev = aux;
-		new->next = NULL;
-		aux->next = new;
+		free(tokens);
+		return (0);
 	}
-	else
-		*stack = new;
+	return (1);
 }
 
-t_token *create_node(int id, char *command)
+static int	handle_redirections(t_token *tokens, char *command)
 {
-	t_token *tokens;
+	tokens->tokens = redir_divisor(command);
+	if (!tokens->tokens)
+	{
+		free(tokens->command);
+		free(tokens);
+		return (0);
+	}
+	parse_redirections(tokens);
+	return (1);
+}
+
+static int	handle_split(t_token *tokens, char *command)
+{
+	tokens->tokens = ft_split(command, ' ');
+	if (!tokens->tokens)
+	{
+		free(tokens->command);
+		free(tokens);
+		return (0);
+	}
+	return (1);
+}
+
+t_token	*create_node(int id, char *command)
+{
+	t_token	*tokens;
 
 	if (!command || !*command)
 		return (NULL);
@@ -76,32 +89,17 @@ t_token *create_node(int id, char *command)
 	if (!tokens)
 		return (NULL);
 	tokens->id = id;
-	tokens->command = ft_strdup(command);
-	if (!tokens->command)
-	{
-		free(tokens);
+	if (!handle_command_allocation(tokens, command))
 		return (NULL);
-	}
 	if (ft_strchr(command, '<') || ft_strchr(command, '>'))
 	{
-		tokens->tokens = redir_divisor(command);
-		if (!tokens->tokens)
-		{
-			free(tokens->command);
-			free(tokens);
+		if (!handle_redirections(tokens, command))
 			return (NULL);
-		}
-		parse_redirections(tokens);
 	}
 	else
 	{
-		tokens->tokens = ft_split(command, ' ');
-		if (!tokens->tokens)
-		{
-			free(tokens->command);
-			free(tokens);
+		if (!handle_split(tokens, command))
 			return (NULL);
-		}
 	}
 	tokens->prev = NULL;
 	tokens->next = NULL;

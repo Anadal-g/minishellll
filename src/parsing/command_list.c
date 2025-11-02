@@ -3,23 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   command_list.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 19:39:07 by mmendiol          #+#    #+#             */
-/*   Updated: 2025/06/30 13:01:51 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/11/02 19:07:18 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static int validate_command_not_empty(char *command)
+static int	validate_command_not_empty(char *command)
 {
-	char *trimmed;
-	int result;
+	char	*trimmed;
+	int		result;
 
 	if (!command)
 		return (0);
-
 	trimmed = ft_strtrim(command, " \t");
 	if (!trimmed || !*trimmed)
 	{
@@ -27,21 +26,19 @@ static int validate_command_not_empty(char *command)
 			free(trimmed);
 		return (0);
 	}
-
 	result = 1;
 	free(trimmed);
 	return (result);
 }
 
-void add_node_tokens(t_token **stack_tokens, char **splited_tokens)
+void	add_node_tokens(t_token **stack_tokens, char **splited_tokens)
 {
 	int		i;
 	t_token	*node;
 	t_token	*node_last;
 
 	if (!stack_tokens || !splited_tokens)
-		return;
-
+		return ;
 	i = -1;
 	while (splited_tokens[++i])
 	{
@@ -57,44 +54,48 @@ void add_node_tokens(t_token **stack_tokens, char **splited_tokens)
 	}
 }
 
-void create_tokens(char *input, t_token **tokens)
+static int	validate_tokens_splited(char **tokens_splited)
 {
-	char **tokens_splited;
-	char *trimmed;
-	int i;
+	int	i;
 
-	if (!input || !tokens)
-	{
-		if (tokens)
-			ft_putstr_fd("Error\n", STDERR_FILENO);
-		return;
-	}
-
-	// Check if input is only whitespace
-	trimmed = ft_strtrim(input, " \t\n");
-	if (!trimmed || !*trimmed)
-	{
-		if (trimmed)
-			free(trimmed);
-		return; // Don't create tokens for empty input
-	}
-	free(trimmed);
-
-	tokens_splited = command_spliter(input, PIPE);
-	if (!tokens_splited)
-		return;
-		
 	i = 0;
 	while (tokens_splited[i])
 	{
 		if (!validate_command_not_empty(tokens_splited[i]))
 		{
-			ft_putstr_fd("minishell: syntax error: empty command\n", STDERR_FILENO);
+			ft_putstr_fd("minishell:error: empty command\n", STDERR_FILENO);
 			free_matrix(tokens_splited);
-			return;
+			return (0);
 		}
 		i++;
 	}
+	return (1);
+}
+
+void	create_tokens(char *input, t_token **tokens)
+{
+	char	**tokens_splited;
+	char	*trimmed;
+
+	if (!input || !tokens)
+	{
+		if (tokens)
+			ft_putstr_fd("Error\n", STDERR_FILENO);
+		return ;
+	}
+	trimmed = ft_strtrim(input, " \t\n");
+	if (!trimmed || !*trimmed)
+	{
+		if (trimmed)
+			free(trimmed);
+		return ;
+	}
+	free(trimmed);
+	tokens_splited = command_spliter(input, PIPE);
+	if (!tokens_splited)
+		return ;
+	if (!validate_tokens_splited(tokens_splited))
+		return ;
 	add_node_tokens(tokens, tokens_splited);
 	free_matrix(tokens_splited);
 }
