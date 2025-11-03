@@ -62,6 +62,10 @@ INCLUDE	= -I includes
 RM		= rm -rf
 LIBFT	= libft/libft.a
 
+READLINE_DIR = $(shell brew --prefix readline)
+FLAGS += -I$(READLINE_DIR)/include
+LDFLAGS += -L$(READLINE_DIR)/lib -lreadline
+
 # COLORS
 RED		=	\033[91;1m
 GREEN	=	\033[92;1m
