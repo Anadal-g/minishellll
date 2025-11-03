@@ -6,7 +6,7 @@
 /*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 20:11:05 by mmendiol          #+#    #+#             */
-/*   Updated: 2025/07/02 13:21:36 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/11/03 12:49:04 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ void quotes_check_in_token(char *token, int *in_quotes)
 
 	j = -1;
 	quote = 0;
+	printf("--> [%s]\n", token);
 	while (token[++j])
 	{
 		if (quote_equal(token[j]) && *in_quotes == 0)
@@ -56,14 +57,15 @@ int quotes_checker(t_token *token)
 int quotes_handler(t_token **token, char *input)
 {
 	t_token	*aux;
-
+	
+	(void)input;
 	aux = *token;
 	while (aux)
 	{
 		if (!quotes_checker(aux))
 		{
 			show_error(QUOTES_NOT_VALID, aux->command);
-			free(input);
+			// free(input);
 			return (0);
 		}
 		aux = aux->next;
@@ -103,11 +105,19 @@ char *quote_joiner(char **tokens)
 	char	*final_str;
 	int		i;
 
+	if (!tokens || !tokens[0])
+		return (NULL);
+	
 	final_len = 0;
 	final_str = NULL;
 	i = -1;
 	while (tokens[++i])
 		final_len += ft_strlen(tokens[i]);
+	if (final_len == 0)
+	{
+		final_str = ft_calloc(1, sizeof(char));
+		return (final_str);
+	}
 	final_str = ft_calloc(final_len + 1, sizeof(char));
 	if (!final_str)
 		return (NULL);

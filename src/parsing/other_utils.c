@@ -58,9 +58,13 @@ void	read_till_character(char *input, int *start, int *counter, char c)
 			quote = input[(*counter)++];
 			jump_character(input, counter, quote, FALSE);
 		}
-		else if (character_finder(input[*counter], c))
-			break ;
-		(*counter)++;
+		else
+		{
+			if (character_finder(input[*counter], c))
+				break ;
+			(*counter)++;
+		}
+
 	}
 }
 

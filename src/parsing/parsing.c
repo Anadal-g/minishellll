@@ -103,7 +103,11 @@ int	command_counter(char *str, char c)
 	while (str[++i])
 	{
 		if (str[i] && (str[i] == DQUOTES || str[i] == SQUOTES))
+		{
 			handle_quotes_and_count(str, &i, &in_word, &commands);
+			if ( !str[i] )
+				break ;
+		}
 		else
 			handle_normal_char(str[i], c, &in_word, &commands);
 	}

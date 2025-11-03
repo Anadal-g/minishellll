@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/23 14:44:23 by mmendiol          #+#    #+#             */
-/*   Updated: 2025/11/02 19:07:52 by marvin           ###   ########.fr       */
+/*   Updated: 2025/11/03 12:16:55 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,14 +58,11 @@ void	append_expanded(char **result, size_t *result_len,
 
 void	append_other_characters(char **result, size_t *result_len, char c)
 {
-	size_t	len;
-
 	*result = ft_realloc(*result, *result_len, *result_len + 2);
-	if (*result)
+	if (result)
 	{
-		len = ft_strlen(*result);
-		(*result)[len] = c;
-		(*result)[len + 1] = '\0';
+		(*result)[ *result_len ] = c;
+		(*result)[ *result_len  + 1 ] = '\0';
 		(*result_len)++;
 	}
 }
