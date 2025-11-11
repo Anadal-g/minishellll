@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   redir.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 12:49:47 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/10/28 20:04:36 by marvin           ###   ########.fr       */
+/*   Updated: 2025/11/11 11:45:25 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-int redir_command_spliter(char **r, char *str)
+int	redir_command_spliter(char **r, char *str)
 {
 	int		i;
 	int		j;
@@ -36,7 +36,7 @@ int redir_command_spliter(char **r, char *str)
 	return (1);
 }
 
-static void update_command_count(char *str, int *i, int *commands, int *in_word)
+static void	update_command_count(char *str, int *i, int *commands, int *in_word)
 {
 	int	op_len;
 
@@ -59,7 +59,7 @@ static void update_command_count(char *str, int *i, int *commands, int *in_word)
 	}
 }
 
-void conditional_operator_counter(char *str, int *i, int *commands)
+void	conditional_operator_counter(char *str, int *i, int *commands)
 {
 	int	in_word;
 
@@ -68,7 +68,7 @@ void conditional_operator_counter(char *str, int *i, int *commands)
 		update_command_count(str, i, commands, &in_word);
 }
 
-int redir_counter(char *str)
+int	redir_counter(char *str)
 {
 	int	i;
 	int	commands;
@@ -79,7 +79,7 @@ int redir_counter(char *str)
 	return (commands);
 }
 
-char **redir_divisor(char const *s)
+char	**redir_divisor(char const *s)
 {
 	int		commands;
 	char	**list_commands;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: carolinamc <carolinamc@student.42.fr>      +#+  +:+       +#+        */
+/*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 18:11:12 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/11/03 11:46:37 by carolinamc       ###   ########.fr       */
+/*   Updated: 2025/11/11 11:55:49 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,7 @@ void handle_parent_pipes(int *prev_fd, int *curr_fd, int has_next);
 void two_or_more_cmds(t_token *tokens, t_env **env);
 void executor(t_token *tokens, t_env **env);
 
+// void	execute_child_command(t_token *token, t_env **env);
 
 
 
@@ -172,5 +173,6 @@ int			is_redir(char *str, int i);
 int			character_finder(char c, char to_find);
 char		*ft_strndup(const char *s, size_t n);
 void		*ft_realloc(void *ptr, size_t old_size, size_t new_size);
+int			handle_split(t_token *tokens, char *command);
 
 #endif

@@ -2,9 +2,12 @@
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   others_utils.c                                     :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: carolinamc <carolinamc@student.42.fr>      +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
+/*                                                    +:+ +:+        
+	+:+     */
+/*   By: carolinamc <carolinamc@student.42.fr>      +#+  +:+      
+	+#+        */
+/*                                                +#+#+#+#+#+  
+	+#+           */
 /*   Created: 2024/05/06 17:02:31 by mmendiol          #+#    #+#             */
 /*   Updated: 2025/07/22 11:48:46 by carolinamc       ###   ########.fr       */
 /*                                                                            */
@@ -12,10 +15,11 @@
 
 #include "../../includes/minishell.h"
 
+
 char	*get_variable_name(char **str)
 {
-	char	*var_start;
-	size_t	len;
+	char *var_start;
+	size_t len;
 
 	var_start = *str;
 	len = 0;
@@ -48,7 +52,7 @@ void	jump_character(char *str, int *counter, char c, int flag)
 
 void	read_till_character(char *input, int *start, int *counter, char c)
 {
-	char	quote;
+	char quote;
 
 	*start = *counter;
 	while (input[*counter])
@@ -64,7 +68,6 @@ void	read_till_character(char *input, int *start, int *counter, char c)
 				break ;
 			(*counter)++;
 		}
-
 	}
 }
 
@@ -77,7 +80,7 @@ t_token	*last_node(t_token *lst)
 
 void	add_node_back(t_token **stack, t_token *new)
 {
-	t_token	*aux;
+	t_token *aux;
 
 	if (!stack || !new)
 		return ;

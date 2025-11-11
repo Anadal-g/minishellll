@@ -3,19 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   childs.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 12:13:47 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/10/28 19:52:48 by marvin           ###   ########.fr       */
+/*   Updated: 2025/11/11 11:36:18 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static void execute_builtin_child(t_token *token, t_env *env, int is_piped)
+static void	execute_builtin_child(t_token *token, t_env *env, int is_piped)
 {
-	t_token *tmp;
-	t_env *tmp_env;
+	t_token	*tmp;
+	t_env	*tmp_env;
 
 	tmp = token;
 	tmp_env = env;
@@ -24,9 +24,9 @@ static void execute_builtin_child(t_token *token, t_env *env, int is_piped)
 		exit(tmp_env->last_out);
 }
 
-static void execute_external_cmd(t_token *token, t_env *env, char **env_array)
+static void	execute_external_cmd(t_token *token, t_env *env, char **env_array)
 {
-	char *path;
+	char	*path;
 
 	path = handle_command_path(token, env, &env_array);
 	if (!path)
@@ -46,9 +46,10 @@ static void execute_external_cmd(t_token *token, t_env *env, char **env_array)
 	exit(126);
 }
 
-void child_aux(t_token *token, t_env *env, int fd_in, int fd_out, int is_piped)
+void	child_aux(t_token *token, t_env *env, int fd_in, int fd_out,
+		int is_piped)
 {
-	char **env_array;
+	char	**env_array;
 
 	if (!token || !token->tokens || !token->tokens[0])
 	{
@@ -59,13 +60,13 @@ void child_aux(t_token *token, t_env *env, int fd_in, int fd_out, int is_piped)
 	if (is_builtin(token->tokens[0]))
 	{
 		execute_builtin_child(token, env, is_piped);
-		return;
+		return ;
 	}
 	env_array = NULL;
 	execute_external_cmd(token, env, env_array);
 }
 
-void wait_childs(pid_t final_pid, int *last_out)
+void	wait_childs(pid_t final_pid, int *last_out)
 {
 	pid_t	current_pid;
 	int		status;

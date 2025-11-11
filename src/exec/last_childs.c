@@ -3,25 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   last_childs.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 12:28:31 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/10/28 19:54:06 by marvin           ###   ########.fr       */
+/*   Updated: 2025/11/11 11:46:21 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static void setup_last_child(t_token *token, t_env *env, int fd_in, int fd_out)
+static void	setup_last_child(t_token *token, t_env *env, int fd_in, int fd_out)
 {
-    child_aux(token, env, fd_in, fd_out, 1);
+	child_aux(token, env, fd_in, fd_out, 1);
 }
 
 void	last_child(t_token *token, t_env **env, int *fd)
 {
-	pid_t pid;
-	int fd_in;
-	int fd_out;
+	pid_t	pid;
+	int		fd_in;
+	int		fd_out;
 
 	pid = fork();
 	if (pid == -1)

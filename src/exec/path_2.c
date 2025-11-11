@@ -2,9 +2,12 @@
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   path.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
+/*                                                    +:+ +:+        
+	+:+     */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+      
+	+#+        */
+/*                                                +#+#+#+#+#+  
+	+#+           */
 /*   Created: 2025/03/26 12:37:44 by anadal-g          #+#    #+#             */
 /*   Updated: 2025/10/28 19:54:41 by marvin           ###   ########.fr       */
 /*                                                                            */
@@ -12,9 +15,10 @@
 
 #include "../../includes/minishell.h"
 
-int is_full_path(char *cmd)
+
+int	is_full_path(char *cmd)
 {
-	int	i;
+	int i;
 
 	if (!cmd || !*cmd)
 		return (0);
@@ -28,7 +32,7 @@ int is_full_path(char *cmd)
 	return (0);
 }
 
-char *build_full_path(char *dir, char *cmd)
+char	*build_full_path(char *dir, char *cmd)
 {
 	char *tmp;
 	char *path;

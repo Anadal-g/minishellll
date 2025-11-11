@@ -6,17 +6,17 @@
 /*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 16:59:23 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/07/07 12:38:35 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/11/11 11:32:36 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static int count_env_vars(t_env *env)
+static int	count_env_vars(t_env *env)
 {
-	int count;
-	t_env *current;
-	
+	int		count;
+	t_env	*current;
+
 	count = 0;
 	current = env;
 	while (current)
@@ -27,16 +27,15 @@ static int count_env_vars(t_env *env)
 	return (count);
 }
 
-static t_env **create_env_array(t_env *env, int count)
+static t_env	**create_env_array(t_env *env, int count)
 {
-	t_env **array;
-	t_env *current;
-	int i;
-	
+	t_env	**array;
+	t_env	*current;
+	int		i;
+
 	array = malloc(sizeof(t_env *) * count);
 	if (!array)
 		return (NULL);
-	
 	current = env;
 	i = 0;
 	while (current && i < count)
@@ -48,36 +47,31 @@ static t_env **create_env_array(t_env *env, int count)
 	return (array);
 }
 
-static int compare_env_names(const void *a, const void *b)
+static int	compare_env_names(const void *a, const void *b)
 {
-	t_env *env_a;
-	t_env *env_b;
-	
+	t_env	*env_a;
+	t_env	*env_b;
+
 	env_a = *(t_env **)a;
 	env_b = *(t_env **)b;
-	
 	return (ft_strcmp(env_a->name, env_b->name));
 }
 
-static void print_export_env(t_env *env)
+static void	print_export_env(t_env *env)
 {
-	t_env **env_array;
-	int count;
-	int i;
-	
+	t_env	**env_array;
+	int		count;
+	int		i;
+
 	if (!env)
-		return;
-		
+		return ;
 	count = count_env_vars(env);
 	if (count == 0)
-		return;
-		
+		return ;
 	env_array = create_env_array(env, count);
 	if (!env_array)
-		return;
-	
+		return ;
 	qsort(env_array, count, sizeof(t_env *), compare_env_names);
-	
 	i = 0;
 	while (i < count)
 	{
@@ -87,14 +81,13 @@ static void print_export_env(t_env *env)
 		printf("\n");
 		i++;
 	}
-	
 	free(env_array);
 }
 
-static int is_valid_identifier(char *str)
+static int	is_valid_identifier(char *str)
 {
-	int i;
-	
+	int	i;
+
 	if (!str || !*str)
 		return (0);
 	if (!ft_isalpha(str[0]) && str[0] != '_')
@@ -109,14 +102,14 @@ static int is_valid_identifier(char *str)
 	return (1);
 }
 
-static int export_variable(char *arg, t_env **env)
+static int	export_variable(char *arg, t_env **env)
 {
-	char *equal_pos;
-	char *name;
-	char *value;
-	t_env *existing;
-	t_env *new_env;
-	
+	char	*equal_pos;
+	char	*name;
+	char	*value;
+	t_env	*existing;
+	t_env	*new_env;
+
 	equal_pos = ft_strchr(arg, '=');
 	if (equal_pos)
 	{
@@ -128,7 +121,6 @@ static int export_variable(char *arg, t_env **env)
 		name = ft_strdup(arg);
 		value = NULL;
 	}
-	
 	if (!is_valid_identifier(name))
 	{
 		ft_putstr_fd("minishell: export: `", STDERR_FILENO);
@@ -138,7 +130,6 @@ static int export_variable(char *arg, t_env **env)
 		free(value);
 		return (1);
 	}
-	
 	existing = ft_find_env(*env, name);
 	if (existing && value)
 	{
@@ -167,24 +158,21 @@ static int export_variable(char *arg, t_env **env)
 		free(name);
 		free(value);
 	}
-	
 	return (0);
 }
 
-int do_export(t_token *token, t_env **env)
+int	do_export(t_token *token, t_env **env)
 {
-	int i;
-	int exit_status;
-	
+	int	i;
+	int	exit_status;
+
 	if (!token || !token->tokens || !env)
 		return (1);
-		
 	if (!token->tokens[1])
 	{
 		print_export_env(*env);
 		return (0);
 	}
-	
 	exit_status = 0;
 	i = 1;
 	while (token->tokens[i])
@@ -193,6 +181,5 @@ int do_export(t_token *token, t_env **env)
 			exit_status = 1;
 		i++;
 	}
-	
 	return (exit_status);
 }

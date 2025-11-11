@@ -6,7 +6,7 @@
 /*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/06 17:02:31 by mmendiol          #+#    #+#             */
-/*   Updated: 2025/11/03 12:57:34 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/11/11 11:43:28 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@ static int	validate_command_syntax(char *command)
 			i++;
 			while (command[i] && (command[i] == ' ' || command[i] == '\t'))
 				i++;
-			if (!command[i] || command[i] == '<'
-				|| command[i] == '>' || command[i] == '|')
+			if (!command[i] || command[i] == '<' || command[i] == '>'
+				|| command[i] == '|')
 			{
 				ft_putstr_fd("minishell: unexpected token\n", STDERR_FILENO);
 				return (0);
@@ -62,18 +62,6 @@ static int	handle_redirections(t_token *tokens, char *command)
 		return (0);
 	}
 	parse_redirections(tokens);
-	return (1);
-}
-
-static int	handle_split(t_token *tokens, char *command)
-{
-	tokens->tokens = ft_split(command, ' ');
-	if (!tokens->tokens)
-	{
-		free(tokens->command);
-		free(tokens);
-		return (0);
-	}
 	return (1);
 }
 

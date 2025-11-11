@@ -6,23 +6,23 @@
 /*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 16:59:23 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/07/02 12:02:17 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/11/11 11:32:28 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static int is_numeric(char *str)
+static int	is_numeric(char *str)
 {
-	int i;
-	
+	int	i;
+
 	if (!str)
 		return (0);
 	i = 0;
 	if (str[i] == '+' || str[i] == '-')
 		i++;
 	if (!str[i])
-		return (0);	
+		return (0);
 	while (str[i])
 	{
 		if (!ft_isdigit(str[i]))
@@ -32,14 +32,13 @@ static int is_numeric(char *str)
 	return (1);
 }
 
-int do_exit(t_token *token, t_env **env)
+int	do_exit(t_token *token, t_env **env)
 {
-	int exit_code;
-	
+	int	exit_code;
+
 	printf("exit\n");
-	
 	if (!token || !token->tokens)
-		exit(0);	
+		exit(0);
 	if (!token->tokens[1])
 	{
 		if (*env)

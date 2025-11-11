@@ -45,6 +45,7 @@ SRC_FILES	=	main/minishell.c \
 				parsing/parsing.c \
 				parsing/utils_stack.c \
 				utils/utils.c \
+				utils/utils_2.c \
 				utils/syntax_pipe.c \
 				signals/signals.c 
 

@@ -2,9 +2,12 @@
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   redir_2.c                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
+/*                                                    +:+ +:+        
+	+:+     */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+      
+	+#+        */
+/*                                                +#+#+#+#+#+  
+	+#+           */
 /*   Created: 2024/09/23 12:49:47 by anadal-g          #+#    #+#             */
 /*   Updated: 2025/10/28 20:03:38 by marvin           ###   ########.fr       */
 /*                                                                            */
@@ -12,7 +15,8 @@
 
 #include "../../includes/minishell.h"
 
-void read_till_character_redir(char *input, int *start, int *counter)
+
+void	read_till_character_redir(char *input, int *start, int *counter)
 {
 	if (!input || !start || !counter)
 		return ;
@@ -25,9 +29,9 @@ void read_till_character_redir(char *input, int *start, int *counter)
 	}
 }
 
-int process_operator_or_space(char **r, char *str, int *i, int *commands)
+int	process_operator_or_space(char **r, char *str, int *i, int *commands)
 {
-	int	op_len;
+	int op_len;
 
 	while (str[*i] && (str[*i] == ' ' || str[*i] == '\t' || str[*i] == '\n'))
 		(*i)++;
@@ -43,7 +47,7 @@ int process_operator_or_space(char **r, char *str, int *i, int *commands)
 	return (0);
 }
 
-char *process_word(char *str, int j, int i)
+char	*process_word(char *str, int j, int i)
 {
 	char *tmp_substr;
 	char *tmp_trim;

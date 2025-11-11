@@ -3,19 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   path.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 12:37:44 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/10/28 20:00:23 by marvin           ###   ########.fr       */
+/*   Updated: 2025/11/11 11:45:47 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static char *search_in_path(char *cmd, char **path_list)
+static char	*search_in_path(char *cmd, char **path_list)
 {
-	char *path;
-	int i;
+	char	*path;
+	int		i;
 
 	if (!cmd || !*cmd || !path_list)
 		return (NULL);
@@ -25,7 +25,7 @@ static char *search_in_path(char *cmd, char **path_list)
 		if (!path_list[i] || !*path_list[i])
 		{
 			i++;
-			continue;
+			continue ;
 		}
 		path = build_full_path(path_list[i], cmd);
 		if (!path)
@@ -38,9 +38,9 @@ static char *search_in_path(char *cmd, char **path_list)
 	return (NULL);
 }
 
-static char **get_path_list(t_env **env)
+static char	**get_path_list(t_env **env)
 {
-	t_env *current;
+	t_env	*current;
 
 	if (!env || !*env)
 		return (NULL);
@@ -58,9 +58,9 @@ static char **get_path_list(t_env **env)
 	return (NULL);
 }
 
-static int is_empty_command(char *cmd)
+static int	is_empty_command(char *cmd)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (cmd[i] && (cmd[i] == ' ' || cmd[i] == '\t'))
@@ -70,9 +70,9 @@ static int is_empty_command(char *cmd)
 	return (0);
 }
 
-static void free_path_list(char **path_list)
+static void	free_path_list(char **path_list)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (path_list[i])
@@ -83,10 +83,10 @@ static void free_path_list(char **path_list)
 	free(path_list);
 }
 
-char *get_path(char *cmd, t_env **env)
+char	*get_path(char *cmd, t_env **env)
 {
-	char **path_list;
-	char *path_cmd;
+	char	**path_list;
+	char	*path_cmd;
 
 	if (!cmd || !*cmd || !env || !*env)
 		return (NULL);

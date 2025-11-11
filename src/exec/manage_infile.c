@@ -3,19 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   manage_infile.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/03 11:24:36 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/10/28 19:54:15 by marvin           ###   ########.fr       */
+/*   Updated: 2025/11/11 11:46:16 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static int open_heredoc_file(char *name)
+static int	open_heredoc_file(char *name)
 {
-	char *tmp_file;
-	int temp_fd;
+	char	*tmp_file;
+	int		temp_fd;
 
 	tmp_file = heredoc(name);
 	if (!tmp_file)
@@ -26,9 +26,9 @@ static int open_heredoc_file(char *name)
 	return (temp_fd);
 }
 
-static int open_regular_infile(t_iofile *current)
+static int	open_regular_infile(t_iofile *current)
 {
-	int temp_fd;
+	int	temp_fd;
 
 	if (current->type == HEREDOC)
 		temp_fd = open_heredoc_file(current->name);
@@ -47,11 +47,11 @@ static int open_regular_infile(t_iofile *current)
 	return (temp_fd);
 }
 
-int open_infile(t_iofile *infiles)
+int	open_infile(t_iofile *infiles)
 {
-	t_iofile *current;
-	int fd;
-	int temp_fd;
+	t_iofile	*current;
+	int			fd;
+	int			temp_fd;
 
 	if (!infiles)
 		return (STDIN_FILENO);

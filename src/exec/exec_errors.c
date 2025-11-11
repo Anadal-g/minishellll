@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   exec_errors.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 12:23:55 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/10/28 19:53:07 by marvin           ###   ########.fr       */
+/*   Updated: 2025/11/11 11:36:30 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void exit_fork_pipe(int type)
+void	exit_fork_pipe(int type)
 {
 	if (type == PIPE)
 		ft_putstr_fd("minishell: error creating pipe\n", STDERR_FILENO);

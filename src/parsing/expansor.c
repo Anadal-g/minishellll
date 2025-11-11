@@ -6,7 +6,7 @@
 /*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/23 14:44:23 by mmendiol          #+#    #+#             */
-/*   Updated: 2025/11/03 12:16:55 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/11/11 11:44:15 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,8 @@ static char	*get_env_value(char *var_name, t_env *env)
 	return (env_value);
 }
 
-void	append_expanded(char **result, size_t *result_len,
-						char *var_name, t_env *env)
+void	append_expanded(char **result, size_t *result_len, char *var_name,
+		t_env *env)
 {
 	char	*env_value;
 	size_t	env_len;
@@ -61,8 +61,8 @@ void	append_other_characters(char **result, size_t *result_len, char c)
 	*result = ft_realloc(*result, *result_len, *result_len + 2);
 	if (result)
 	{
-		(*result)[ *result_len ] = c;
-		(*result)[ *result_len  + 1 ] = '\0';
+		(*result)[*result_len] = c;
+		(*result)[*result_len + 1] = '\0';
 		(*result_len)++;
 	}
 }

@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   manage_outfile.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 12:10:58 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/10/28 19:54:23 by marvin           ###   ########.fr       */
+/*   Updated: 2025/11/11 11:46:06 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static int open_regular_outfile(t_iofile *current)
+static int	open_regular_outfile(t_iofile *current)
 {
-	int temp_fd;
+	int	temp_fd;
 
 	if (current->type == TRUNC)
 		temp_fd = open(current->name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
@@ -33,11 +33,11 @@ static int open_regular_outfile(t_iofile *current)
 	return (temp_fd);
 }
 
-int open_outfile(t_iofile *outfiles)
+int	open_outfile(t_iofile *outfiles)
 {
-	t_iofile *current;
-	int fd;
-	int temp_fd;
+	t_iofile	*current;
+	int			fd;
+	int			temp_fd;
 
 	if (!outfiles)
 		return (STDOUT_FILENO);

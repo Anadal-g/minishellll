@@ -3,31 +3,31 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 12:31:45 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/10/28 19:53:53 by marvin           ###   ########.fr       */
+/*   Updated: 2025/11/11 11:46:25 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static char *create_heredoc_filename(void)
+static char	*create_heredoc_filename(void)
 {
-	static int heredoc_count = 0;
-	char *tmp_file;
+	static int	heredoc_count = 0;
+	char		*tmp_file;
 
 	tmp_file = malloc(200);
 	if (!tmp_file)
 		return (NULL);
-	snprintf(tmp_file, 200, "/tmp/minishell_heredoc_%d_%d",
-		getpid(), heredoc_count++);
+	snprintf(tmp_file, 200, "/tmp/minishell_heredoc_%d_%d", getpid(),
+		heredoc_count++);
 	return (tmp_file);
 }
 
-static int open_heredoc_file(char *filename)
+static int	open_heredoc_file(char *filename)
 {
-	int fd;
+	int	fd;
 
 	fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd == -1)
@@ -39,15 +39,15 @@ static int open_heredoc_file(char *filename)
 	return (fd);
 }
 
-static void write_heredoc_line(int fd, char *line)
+static void	write_heredoc_line(int fd, char *line)
 {
 	write(fd, line, ft_strlen(line));
 	write(fd, "\n", 1);
 }
 
-static int read_heredoc_lines(int fd, char *delimiter)
+static int	read_heredoc_lines(int fd, char *delimiter)
 {
-	char *line;
+	char	*line;
 
 	while (1)
 	{
@@ -69,10 +69,10 @@ static int read_heredoc_lines(int fd, char *delimiter)
 	return (0);
 }
 
-char *heredoc(char *delimiter)
+char	*heredoc(char *delimiter)
 {
-	int fd;
-	char *tmp_file;
+	int		fd;
+	char	*tmp_file;
 
 	if (!delimiter || !*delimiter)
 	{
