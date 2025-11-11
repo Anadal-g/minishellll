@@ -6,7 +6,7 @@
 /*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 19:39:07 by mmendiol          #+#    #+#             */
-/*   Updated: 2025/11/11 11:44:27 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/11/11 13:20:02 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,9 +51,7 @@ void	add_node_tokens(t_token **stack_tokens, char **splited_tokens)
 		}
 		if (node)
 		{
-			printf("=> %s\n", node->command);
 			for (int j = 0; node->tokens[j]; j++)
-				printf("\t- {%s}\n", node->tokens[j]);
 			add_node_back(stack_tokens, node);
 		}
 	}

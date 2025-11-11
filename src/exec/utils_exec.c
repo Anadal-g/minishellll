@@ -6,7 +6,7 @@
 /*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 12:14:11 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/11/11 11:47:19 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/11/11 12:59:37 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ int	count_tokens(t_token *tokens)
 	}
 	return (count);
 }
+
 void	one_command(t_token *token, t_env **env)
 {
 	if (!token || !token->tokens || !token->tokens[0])

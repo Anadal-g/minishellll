@@ -3,19 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 12:24:16 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/10/28 20:15:16 by marvin           ###   ########.fr       */
+/*   Updated: 2025/11/11 12:50:30 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void exec_pipeline_external(t_token *current, t_env **env)
+void	exec_pipeline_external(t_token *current, t_env **env)
 {
-	char *path;
-	char **env_array;
+	char	*path;
+	char	**env_array;
 
 	path = handle_command_path(current, *env, &env_array);
 	if (!path)
@@ -35,11 +35,11 @@ void exec_pipeline_external(t_token *current, t_env **env)
 	exit(126);
 }
 
-void execute_pipeline_child(t_token *current, t_env **env, int *prev_fd,
-	int *curr_fd, int is_last)
+void	execute_pipeline_child(t_token *current, t_env **env, int *prev_fd,
+		int *curr_fd, int is_last)
 {
-	int fd_in;
-	int fd_out;
+	int	fd_in;
+	int	fd_out;
 
 	fd_in = STDIN_FILENO;
 	fd_out = STDOUT_FILENO;
@@ -59,7 +59,7 @@ void execute_pipeline_child(t_token *current, t_env **env, int *prev_fd,
 		exec_pipeline_external(current, env);
 }
 
-void handle_parent_pipes(int *prev_fd, int *curr_fd, int has_next)
+void	handle_parent_pipes(int *prev_fd, int *curr_fd, int has_next)
 {
 	if (prev_fd[0] != -1)
 	{
@@ -73,13 +73,13 @@ void handle_parent_pipes(int *prev_fd, int *curr_fd, int has_next)
 	}
 }
 
-void two_or_more_cmds(t_token *tokens, t_env **env)
+void	two_or_more_cmds(t_token *tokens, t_env **env)
 {
-	t_token *current;
-	int prev_fd[2];
-	int curr_fd[2];
-	pid_t pid;
-	pid_t last_pid;
+	t_token	*current;
+	int		prev_fd[2];
+	int		curr_fd[2];
+	pid_t	pid;
+	pid_t	last_pid;
 
 	prev_fd[0] = -1;
 	prev_fd[1] = -1;
@@ -93,7 +93,8 @@ void two_or_more_cmds(t_token *tokens, t_env **env)
 		if (pid < 0)
 			exit_fork_pipe(FORK);
 		if (pid == 0)
-			execute_pipeline_child(current, env, prev_fd, curr_fd, !current->next);
+			execute_pipeline_child(current, env, prev_fd, curr_fd,
+				!current->next);
 		handle_parent_pipes(prev_fd, curr_fd, current->next != NULL);
 		if (!current->next)
 			last_pid = pid;
@@ -107,12 +108,12 @@ void two_or_more_cmds(t_token *tokens, t_env **env)
 	wait_childs(last_pid, &(*env)->last_out);
 }
 
-void executor(t_token *tokens, t_env **env)
+void	executor(t_token *tokens, t_env **env)
 {
-	int cmd_count;
+	int	cmd_count;
 
 	if (!tokens)
-		return;
+		return ;
 	cmd_count = count_tokens(tokens);
 	if (cmd_count == 1)
 		one_command(tokens, env);

@@ -1,20 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   redir_2.c                                            :+:      :+:    :+:   */
+/*   redir_2.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+        
 	+:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+      
+/*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+      
 	+#+        */
 /*                                                +#+#+#+#+#+  
 	+#+           */
-/*   Created: 2024/09/23 12:49:47 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/10/28 20:03:38 by marvin           ###   ########.fr       */
+/*   Created: 2025/11/11 12:58:05 by anadal-g          #+#    #+#             */
+/*   Updated: 2025/11/11 12:58:05 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-
 
 void	read_till_character_redir(char *input, int *start, int *counter)
 {
@@ -31,7 +30,7 @@ void	read_till_character_redir(char *input, int *start, int *counter)
 
 int	process_operator_or_space(char **r, char *str, int *i, int *commands)
 {
-	int op_len;
+	int	op_len;
 
 	while (str[*i] && (str[*i] == ' ' || str[*i] == '\t' || str[*i] == '\n'))
 		(*i)++;
@@ -49,8 +48,8 @@ int	process_operator_or_space(char **r, char *str, int *i, int *commands)
 
 char	*process_word(char *str, int j, int i)
 {
-	char *tmp_substr;
-	char *tmp_trim;
+	char	*tmp_substr;
+	char	*tmp_trim;
 
 	tmp_substr = ft_substr(str, j, i - j);
 	if (!tmp_substr || !*tmp_substr)

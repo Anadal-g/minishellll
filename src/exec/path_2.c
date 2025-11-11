@@ -1,24 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   path.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+        
-	+:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+      
-	+#+        */
-/*                                                +#+#+#+#+#+  
-	+#+           */
-/*   Created: 2025/03/26 12:37:44 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/10/28 19:54:41 by marvin           ###   ########.fr       */
+/*   path_2.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/11 12:57:06 by anadal-g          #+#    #+#             */
+/*   Updated: 2025/11/11 12:57:06 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-
 int	is_full_path(char *cmd)
 {
-	int i;
+	int	i;
 
 	if (!cmd || !*cmd)
 		return (0);
@@ -34,8 +30,8 @@ int	is_full_path(char *cmd)
 
 char	*build_full_path(char *dir, char *cmd)
 {
-	char *tmp;
-	char *path;
+	char	*tmp;
+	char	*path;
 
 	tmp = ft_strjoin(dir, "/");
 	if (!tmp)

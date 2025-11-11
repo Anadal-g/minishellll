@@ -6,7 +6,7 @@
 /*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/25 13:53:01 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/11/11 11:42:59 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/11/11 13:09:03 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static void	process_quote_state_loop(char *input, int *i_ptr,
 	while (input[*i_ptr])
 	{
 		if ((input[*i_ptr] == '"' || input[*i_ptr] == '\'')
-				&& !(*in_quotes_ptr))
+			&& !(*in_quotes_ptr))
 		{
 			*in_quotes_ptr = 1;
 			*quote_char_ptr = input[*i_ptr];

@@ -6,7 +6,7 @@
 /*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 12:31:45 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/11/11 11:46:25 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/11/11 12:54:51 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,8 @@ static int	read_heredoc_lines(int fd, char *delimiter)
 		line = readline("> ");
 		if (!line)
 		{
-			ft_putstr_fd("minishell: warning: here-document delimited by end-of-file\n",
-				STDERR_FILENO);
+			ft_putstr_fd("minishell: warning: here-document delimited"
+				"by end-of-file\n", STDERR_FILENO);
 			return (1);
 		}
 		if (ft_strcmp(line, delimiter) == 0)
