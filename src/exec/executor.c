@@ -6,7 +6,7 @@
 /*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 12:24:16 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/11/12 10:36:29 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/11/12 11:01:01 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,8 @@ void	execute_pipeline_child(t_token *current, t_env **env, int *prev_fd,
 {
 	int	fd_in;
 	int	fd_out;
-
+	t_pipeinfo	info;
+	
 	fd_in = STDIN_FILENO;
 	fd_out = STDOUT_FILENO;
 	if (!setup_pipeline_input(current, prev_fd, &fd_in))
@@ -51,7 +52,12 @@ void	execute_pipeline_child(t_token *current, t_env **env, int *prev_fd,
 			close(fd_in);
 		exit(1);
 	}
-	close_unused_pipes(prev_fd, curr_fd, fd_in, fd_out, is_last);
+	info.prev_fd = prev_fd;
+	info.curr_fd = curr_fd;
+	info.fd_in = fd_in;
+	info.fd_out = fd_out;
+	info.is_last = is_last;
+	close_unused_pipes(&info);
 	setup_child_io(fd_in, fd_out);
 	if (is_builtin(current->tokens[0]))
 		exec_pipeline_builtin(current, env);

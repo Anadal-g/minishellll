@@ -6,7 +6,7 @@
 /*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 12:28:31 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/11/11 11:46:21 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/11/12 11:59:23 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,12 @@
 
 static void	setup_last_child(t_token *token, t_env *env, int fd_in, int fd_out)
 {
-	child_aux(token, env, fd_in, fd_out, 1);
+	t_childinfo	info;
+
+	info.fd_in = fd_in;
+	info.fd_out = fd_out;
+	info.is_piped = 0;
+	child_aux(token, env, &info);
 }
 
 void	last_child(t_token *token, t_env **env, int *fd)

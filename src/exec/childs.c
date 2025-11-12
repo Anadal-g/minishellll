@@ -6,7 +6,7 @@
 /*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 12:13:47 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/11/11 11:36:18 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/11/12 11:59:07 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,7 @@ static void	execute_external_cmd(t_token *token, t_env *env, char **env_array)
 	exit(126);
 }
 
-void	child_aux(t_token *token, t_env *env, int fd_in, int fd_out,
-		int is_piped)
+void	child_aux(t_token *token, t_env *env, t_childinfo *info)
 {
 	char	**env_array;
 
@@ -56,10 +55,10 @@ void	child_aux(t_token *token, t_env *env, int fd_in, int fd_out,
 		ft_putstr_fd("minishell: invalid token\n", STDERR_FILENO);
 		exit(1);
 	}
-	setup_child_io(fd_in, fd_out);
+	setup_child_io(info->fd_in, info->fd_out);
 	if (is_builtin(token->tokens[0]))
 	{
-		execute_builtin_child(token, env, is_piped);
+		execute_builtin_child(token, env, info->is_piped);
 		return ;
 	}
 	env_array = NULL;

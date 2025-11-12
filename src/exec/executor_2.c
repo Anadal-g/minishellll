@@ -12,7 +12,6 @@
 
 #include "../../includes/minishell.h"
 
-
 void	close_unused_pipes(t_pipeinfo *info)
 {
 	if (info->prev_fd[0] != -1 && info->fd_in != info->prev_fd[0])

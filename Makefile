@@ -11,6 +11,8 @@ SRC_FILES	=	main/minishell.c \
 				built-ins/cd.c \
 				built-ins/pwd.c \
 				built-ins/export.c \
+				built-ins/export_2.c \
+				built-ins/export_3.c \
 				built-ins/unset.c \
 				built-ins/env.c \
 				built-ins/exit.c \

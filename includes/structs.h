@@ -6,7 +6,7 @@
 /*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 13:29:16 by mmendiol          #+#    #+#             */
-/*   Updated: 2025/11/12 10:42:15 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/11/12 11:49:46 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,13 @@ enum e_iotype
 	APPEND,
 	TRUNC,
 };
+
+typedef struct s_childinfo
+{
+	int	fd_in;
+	int	fd_out;
+	int	is_piped;
+}	t_childinfo;
 
 typedef struct s_pipeinfo
 {

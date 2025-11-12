@@ -6,7 +6,7 @@
 /*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 18:11:12 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/11/12 10:43:09 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/11/12 11:57:17 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,9 @@ int				do_export(t_token *token, t_env **env);
 int				do_unset(t_token *token, t_env **env);
 int				do_env(t_token *token, t_env *env);
 int				do_exit(t_token *token, t_env **env);
+void			print_export_env(t_env *env);
+int				is_valid_identifier(char *str);
+int				create_new_env(char *name, char *value, t_env **env);
 
 /*===========================================*/
 /*                   ENV                     */
@@ -75,8 +78,9 @@ void			first_child(t_token *token, t_env **env, int *fd);
 void			mid_child(t_token *token, t_env **env, int *fd, int *new);
 void			last_child(t_token *token, t_env **env, int *fd);
 void			wait_childs(pid_t final_pid, int *last_out);
-void			child_aux(t_token *token, t_env *env, int fd_in, int fd_out,
-					int is_piped);
+void			child_aux(t_token *token, t_env *env, t_childinfo *info);
+
+
 int				open_infile(t_iofile *infiles);
 int				open_outfile(t_iofile *outfiles);
 char			*heredoc(char *delimiter);
