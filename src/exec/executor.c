@@ -6,7 +6,7 @@
 /*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 12:24:16 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/11/11 12:50:30 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/11/12 10:36:29 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,39 +73,48 @@ void	handle_parent_pipes(int *prev_fd, int *curr_fd, int has_next)
 	}
 }
 
-void	two_or_more_cmds(t_token *tokens, t_env **env)
+static void	close_and_wait(pid_t last_pid, int *prev_fd, t_env **env)
 {
-	t_token	*current;
-	int		prev_fd[2];
-	int		curr_fd[2];
-	pid_t	pid;
-	pid_t	last_pid;
-
-	prev_fd[0] = -1;
-	prev_fd[1] = -1;
-	last_pid = -1;
-	current = tokens;
-	while (current)
-	{
-		if (current->next && pipe(curr_fd) < 0)
-			exit_fork_pipe(PIPE);
-		pid = fork();
-		if (pid < 0)
-			exit_fork_pipe(FORK);
-		if (pid == 0)
-			execute_pipeline_child(current, env, prev_fd, curr_fd,
-				!current->next);
-		handle_parent_pipes(prev_fd, curr_fd, current->next != NULL);
-		if (!current->next)
-			last_pid = pid;
-		current = current->next;
-	}
 	if (prev_fd[0] != -1)
 	{
 		close(prev_fd[0]);
 		close(prev_fd[1]);
 	}
 	wait_childs(last_pid, &(*env)->last_out);
+}
+
+static pid_t	fork_and_exec(t_token *cur, t_env **env, int *prev_fd, int *curr_fd)
+{
+	pid_t	pid;
+
+	pid = fork();
+	if (pid < 0)
+		exit_fork_pipe(FORK);
+	if (pid == 0)
+		execute_pipeline_child(cur, env, prev_fd, curr_fd, !cur->next);
+	handle_parent_pipes(prev_fd, curr_fd, cur->next != NULL);
+	return (pid);
+}
+
+void	two_or_more_cmds(t_token *tokens, t_env **env)
+{
+	t_token	*cur;
+	int		prev_fd[2];
+	int		curr_fd[2];
+	pid_t	last_pid;
+
+	prev_fd[0] = -1;
+	prev_fd[1] = -1;
+	last_pid = -1;
+	cur = tokens;
+	while (cur)
+	{
+		if (cur->next && pipe(curr_fd) < 0)
+			exit_fork_pipe(PIPE);
+		last_pid = fork_and_exec(cur, env, prev_fd, curr_fd);
+		cur = cur->next;
+	}
+	close_and_wait(last_pid, prev_fd, env);
 }
 
 void	executor(t_token *tokens, t_env **env)

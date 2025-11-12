@@ -6,7 +6,7 @@
 /*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/11 11:27:16 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/11/11 13:15:41 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/11/12 10:35:58 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static char	*extract_word(char *command, int start, int end)
 	char	*word;
 	int		i;
 
-	word = calloc(end - start + 1, sizeof(char));
+	word = ft_calloc(end - start + 1, sizeof(char));
 	if (!word)
 		exit(1);
 	i = 0;
@@ -32,14 +32,14 @@ static char	*extract_word(char *command, int start, int end)
 
 static char	**add_word(char **words, char *word)
 {
-	size_t	words_size;
+	size_t	size;
 	char	**new_words;
 	int		i;
 
-	words_size = 0;
-	while (words && words[words_size])
-		words_size++;
-	new_words = ft_calloc(words_size + 2, sizeof(char *));
+	size = 0;
+	while (words && words[size])
+		size++;
+	new_words = ft_calloc(size + 2, sizeof(char *));
 	if (!new_words)
 		exit(1);
 	i = 0;
@@ -53,38 +53,56 @@ static char	**add_word(char **words, char *word)
 	return (new_words);
 }
 
-int	handle_split(t_token *tokens, char *command)
+static int	process_quoted_word(t_token *tokens, char *cmd, int *i)
 {
 	int		counter;
 	char	*word;
 
-	tokens->tokens = NULL;
-	for (int i = 0; command && command[i]; i++)
+	counter = *i + 1;
+	jump_character(cmd, &counter, cmd[*i], FALSE);
+	if (cmd[counter] && cmd[counter] != ' ')
 	{
-		while (command[i] == ' ')
+		counter++;
+		jump_character(cmd, &counter, ' ', FALSE);
+	}
+	word = extract_word(cmd, *i, counter);
+	tokens->tokens = add_word(tokens->tokens, word);
+	*i = counter - 1;
+	return (0);
+}
+
+static int	process_normal_word(t_token *tokens, char *cmd, int *i)
+{
+	int		counter;
+	char	*word;
+
+	counter = *i + 1;
+	jump_character(cmd, &counter, ' ', FALSE);
+	if (cmd[counter])
+		counter--;
+	word = extract_word(cmd, *i, counter);
+	tokens->tokens = add_word(tokens->tokens, word);
+	*i = counter - 1;
+	return (0);
+}
+
+int	handle_split(t_token *tokens, char *cmd)
+{
+	int	i;
+
+	i = 0;
+	tokens->tokens = NULL;
+	while (cmd && cmd[i])
+	{
+		while (cmd[i] == ' ')
 			i++;
-		counter = i + 1;
-		if (command[i] == '\'' || command[i] == '\"')
-		{
-			jump_character(command, &counter, command[i], FALSE);
-			if (command[counter] && command[counter] != ' ')
-			{
-				counter++;
-				jump_character(command, &counter, ' ', FALSE);
-			}
-			word = extract_word(command, i, counter);
-			tokens->tokens = add_word(tokens->tokens, word);
-			i = counter - 1;
-		}
+		if (!cmd[i])
+			break ;
+		if (cmd[i] == '\'' || cmd[i] == '\"')
+			process_quoted_word(tokens, cmd, &i);
 		else
-		{
-			jump_character(command, &counter, ' ', FALSE);
-			if (command[counter])
-				counter--;
-			word = extract_word(command, i, counter);
-			tokens->tokens = add_word(tokens->tokens, word);
-			i = counter - 1;
-		}
+			process_normal_word(tokens, cmd, &i);
+		i++;
 	}
 	if (!tokens->tokens)
 	{

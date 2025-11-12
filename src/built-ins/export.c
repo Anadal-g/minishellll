@@ -6,7 +6,7 @@
 /*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 16:59:23 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/11/11 11:32:36 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/11/12 10:38:56 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,18 +30,18 @@ static int	count_env_vars(t_env *env)
 static t_env	**create_env_array(t_env *env, int count)
 {
 	t_env	**array;
-	t_env	*current;
+	t_env	*cur;
 	int		i;
 
 	array = malloc(sizeof(t_env *) * count);
 	if (!array)
 		return (NULL);
-	current = env;
+	cur = env;
 	i = 0;
-	while (current && i < count)
+	while (cur && i < count)
 	{
-		array[i] = current;
-		current = current->next;
+		array[i] = cur;
+		cur = cur->next;
 		i++;
 	}
 	return (array);
@@ -57,9 +57,17 @@ static int	compare_env_names(const void *a, const void *b)
 	return (ft_strcmp(env_a->name, env_b->name));
 }
 
+static void	print_env_line(t_env *env)
+{
+	printf("declare -x %s", env->name);
+	if (env->value)
+		printf("=\"%s\"", env->value);
+	printf("\n");
+}
+
 static void	print_export_env(t_env *env)
 {
-	t_env	**env_array;
+	t_env	**array;
 	int		count;
 	int		i;
 
@@ -68,20 +76,14 @@ static void	print_export_env(t_env *env)
 	count = count_env_vars(env);
 	if (count == 0)
 		return ;
-	env_array = create_env_array(env, count);
-	if (!env_array)
+	array = create_env_array(env, count);
+	if (!array)
 		return ;
-	qsort(env_array, count, sizeof(t_env *), compare_env_names);
+	qsort(array, count, sizeof(t_env *), compare_env_names);
 	i = 0;
 	while (i < count)
-	{
-		printf("declare -x %s", env_array[i]->name);
-		if (env_array[i]->value)
-			printf("=\"%s\"", env_array[i]->value);
-		printf("\n");
-		i++;
-	}
-	free(env_array);
+		print_env_line(array[i++]);
+	free(array);
 }
 
 static int	is_valid_identifier(char *str)
@@ -102,84 +104,99 @@ static int	is_valid_identifier(char *str)
 	return (1);
 }
 
-static int	export_variable(char *arg, t_env **env)
+static int	handle_existing_env(t_env *existing, char *value, char *name)
 {
-	char	*equal_pos;
-	char	*name;
-	char	*value;
-	t_env	*existing;
-	t_env	*new_env;
-
-	equal_pos = ft_strchr(arg, '=');
-	if (equal_pos)
-	{
-		name = ft_substr(arg, 0, equal_pos - arg);
-		value = ft_strdup(equal_pos + 1);
-	}
-	else
-	{
-		name = ft_strdup(arg);
-		value = NULL;
-	}
-	if (!is_valid_identifier(name))
-	{
-		ft_putstr_fd("minishell: export: `", STDERR_FILENO);
-		ft_putstr_fd(arg, STDERR_FILENO);
-		ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
-		free(name);
-		free(value);
-		return (1);
-	}
-	existing = ft_find_env(*env, name);
 	if (existing && value)
 	{
 		free(existing->value);
 		existing->value = value;
 		free(name);
+		return (1);
 	}
-	else if (!existing)
-	{
-		new_env = ft_calloc(1, sizeof(t_env));
-		if (!new_env)
-		{
-			free(name);
-			free(value);
-			return (1);
-		}
-		new_env->name = name;
-		new_env->value = value;
-		new_env->next = NULL;
-		new_env->prev = NULL;
-		new_env->last_out = 0;
-		ft_addback_env(env, new_env);
-	}
-	else
+	return (0);
+}
+
+static int	create_new_env(char *name, char *value, t_env **env)
+{
+	t_env	*new_env;
+
+	new_env = ft_calloc(1, sizeof(t_env));
+	if (!new_env)
 	{
 		free(name);
 		free(value);
+		return (1);
 	}
+	new_env->name = name;
+	new_env->value = value;
+	new_env->next = NULL;
+	new_env->prev = NULL;
+	new_env->last_out = 0;
+	ft_addback_env(env, new_env);
 	return (0);
+}
+
+static int	parse_export_arg(char *arg, t_pair *pair)
+{
+	char	*eq;
+
+	eq = ft_strchr(arg, '=');
+	if (eq)
+	{
+		pair->name = ft_substr(arg, 0, eq - arg);
+		pair->value = ft_strdup(eq + 1);
+	}
+	else
+	{
+		pair->name = ft_strdup(arg);
+		pair->value = NULL;
+	}
+	if (!pair->name)
+		return (1);
+	return (0);
+}
+
+static int	handle_invalid_id(char *arg, t_pair *pair)
+{
+	ft_putstr_fd("minishell: export: `", STDERR_FILENO);
+	ft_putstr_fd(arg, STDERR_FILENO);
+	ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
+	free(pair->name);
+	free(pair->value);
+	return (1);
+}
+
+static int	export_variable(char *arg, t_env **env)
+{
+	t_pair	pair;
+	t_env	*existing;
+
+	if (parse_export_arg(arg, &pair))
+		return (1);
+	if (!is_valid_identifier(pair.name))
+		return (handle_invalid_id(arg, &pair));
+	existing = ft_find_env(*env, pair.name);
+	if (handle_existing_env(existing, pair.value, pair.name))
+		return (0);
+	return (create_new_env(pair.name, pair.value, env));
 }
 
 int	do_export(t_token *token, t_env **env)
 {
 	int	i;
-	int	exit_status;
+	int	status;
 
 	if (!token || !token->tokens || !env)
 		return (1);
 	if (!token->tokens[1])
-	{
-		print_export_env(*env);
-		return (0);
-	}
-	exit_status = 0;
+		return (print_export_env(*env), 0);
+	status = 0;
 	i = 1;
 	while (token->tokens[i])
 	{
 		if (export_variable(token->tokens[i], env) != 0)
-			exit_status = 1;
+			status = 1;
 		i++;
 	}
-	return (exit_status);
+	return (status);
 }

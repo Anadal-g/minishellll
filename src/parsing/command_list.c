@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/14 19:39:07 by mmendiol          #+#    #+#             */
-/*   Updated: 2025/11/11 13:20:02 by anadal-g         ###   ########.fr       */
+/*   Created: 2025/11/11 19:00:00 by anadal-g          #+#    #+#             */
+/*   Updated: 2025/11/12 10:41:16 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,29 +31,33 @@ static int	validate_command_not_empty(char *command)
 	return (result);
 }
 
+static void	add_token_node(t_token **stack, char *content)
+{
+	t_token	*node;
+	t_token	*last;
+
+	if (!*stack)
+		node = create_node(1, content);
+	else
+	{
+		last = last_node(*stack);
+		node = create_node(last->id + 1, content);
+	}
+	if (node)
+		add_node_back(stack, node);
+}
+
 void	add_node_tokens(t_token **stack_tokens, char **splited_tokens)
 {
-	int		i;
-	t_token	*node;
-	t_token	*node_last;
+	int	i;
 
 	if (!stack_tokens || !splited_tokens)
 		return ;
-	i = -1;
-	while (splited_tokens[++i])
+	i = 0;
+	while (splited_tokens[i])
 	{
-		if (!*stack_tokens)
-			node = create_node(1, splited_tokens[i]);
-		else
-		{
-			node_last = last_node(*stack_tokens);
-			node = create_node(node_last->id + 1, splited_tokens[i]);
-		}
-		if (node)
-		{
-			for (int j = 0; node->tokens[j]; j++)
-			add_node_back(stack_tokens, node);
-		}
+		add_token_node(stack_tokens, splited_tokens[i]);
+		i++;
 	}
 }
 
@@ -66,7 +70,7 @@ static int	validate_tokens_splited(char **tokens_splited)
 	{
 		if (!validate_command_not_empty(tokens_splited[i]))
 		{
-			ft_putstr_fd("minishell:error: empty command\n", STDERR_FILENO);
+			ft_putstr_fd("minishell: error: empty command\n", STDERR_FILENO);
 			free_matrix(tokens_splited);
 			return (0);
 		}
@@ -77,7 +81,7 @@ static int	validate_tokens_splited(char **tokens_splited)
 
 void	create_tokens(char *input, t_token **tokens)
 {
-	char	**tokens_splited;
+	char	**splitted;
 	char	*trimmed;
 
 	if (!input || !tokens)
@@ -88,17 +92,13 @@ void	create_tokens(char *input, t_token **tokens)
 	}
 	trimmed = ft_strtrim(input, " \t\n");
 	if (!trimmed || !*trimmed)
-	{
-		if (trimmed)
-			free(trimmed);
-		return ;
-	}
+		return (free(trimmed));
 	free(trimmed);
-	tokens_splited = command_spliter(input, PIPE);
-	if (!tokens_splited)
+	splitted = command_spliter(input, PIPE);
+	if (!splitted)
 		return ;
-	if (!validate_tokens_splited(tokens_splited))
+	if (!validate_tokens_splited(splitted))
 		return ;
-	add_node_tokens(tokens, tokens_splited);
-	free_matrix(tokens_splited);
+	add_node_tokens(tokens, splitted);
+	free_matrix(splitted);
 }

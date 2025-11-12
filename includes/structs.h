@@ -6,7 +6,7 @@
 /*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/03 13:29:16 by mmendiol          #+#    #+#             */
-/*   Updated: 2025/06/25 13:21:47 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/11/12 10:42:15 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,21 @@ enum e_iotype
 	APPEND,
 	TRUNC,
 };
+
+typedef struct s_pipeinfo
+{
+	int	*prev_fd;
+	int	*curr_fd;
+	int	fd_in;
+	int	fd_out;
+	int	is_last;
+}	t_pipeinfo;
+
+typedef struct s_pair
+{
+	char	*name;
+	char	*value;
+}	t_pair;
 
 struct s_iofile
 {

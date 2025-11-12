@@ -6,7 +6,7 @@
 /*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/27 12:19:17 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/11/11 11:32:01 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/11/12 10:35:32 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,45 +31,67 @@ static void	update_pwd_env(t_env **env, char *old_pwd, char *new_pwd)
 	}
 }
 
+static char	*resolve_cd_path(t_token *token, t_env **envp)
+{
+	t_env	*env;
+
+	if (!token->tokens[1])
+	{
+		env = ft_find_env(*envp, "HOME");
+		if (!env || !env->value)
+		{
+			ft_putstr_fd("minishell: cd: HOME not set\n", STDERR_FILENO);
+			return (NULL);
+		}
+		return (ft_strdup(env->value));
+	}
+	if (ft_strcmp(token->tokens[1], "-") == 0)
+	{
+		env = ft_find_env(*envp, "OLDPWD");
+		if (!env || !env->value)
+		{
+			ft_putstr_fd("minishell: cd: OLDPWD not set\n", STDERR_FILENO);
+			return (NULL);
+		}
+		ft_putendl_fd(env->value, STDOUT_FILENO);
+		return (ft_strdup(env->value));
+	}
+	return (ft_strdup(token->tokens[1]));
+}
+
+static int	cd_error(char *path, char *old_pwd)
+{
+	ft_putstr_fd("minishell: cd: ", STDERR_FILENO);
+	ft_putstr_fd(path, STDERR_FILENO);
+	ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
+	free(path);
+	free(old_pwd);
+	return (1);
+}
+
 int	ft_cd(t_token *token, t_env **envp)
 {
 	char	*path;
 	char	*old_pwd;
 	char	*new_pwd;
-	t_env	*home_env;
 
 	if (!token || !token->tokens)
 		return (1);
 	old_pwd = getcwd(NULL, 0);
 	if (!old_pwd)
 		return (1);
-	if (!token->tokens[1])
-	{
-		home_env = ft_find_env(*envp, "HOME");
-		if (!home_env || !home_env->value)
-		{
-			ft_putstr_fd("minishell: cd: HOME not set\n", STDERR_FILENO);
-			free(old_pwd);
-			return (1);
-		}
-		path = home_env->value;
-	}
-	else
-		path = token->tokens[1];
+	path = resolve_cd_path(token, envp);
+	if (!path)
+		return (free(old_pwd), 1);
 	if (chdir(path) != 0)
-	{
-		ft_putstr_fd("minishell: cd: ", STDERR_FILENO);
-		ft_putstr_fd(path, STDERR_FILENO);
-		ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
-		free(old_pwd);
-		return (1);
-	}
+		return (cd_error(path, old_pwd));
 	new_pwd = getcwd(NULL, 0);
 	if (new_pwd)
 	{
 		update_pwd_env(envp, old_pwd, new_pwd);
 		free(new_pwd);
 	}
+	free(path);
 	free(old_pwd);
 	return (0);
 }

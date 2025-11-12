@@ -6,7 +6,7 @@
 /*   By: anadal-g <anadal-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 18:11:12 by anadal-g          #+#    #+#             */
-/*   Updated: 2025/11/11 12:40:34 by anadal-g         ###   ########.fr       */
+/*   Updated: 2025/11/12 10:43:09 by anadal-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,8 +104,8 @@ int				setup_pipeline_input(t_token *current, int *prev_fd,
 					int *fd_in);
 int				setup_pipeline_output(t_token *current, int *curr_fd,
 					int *fd_out, int is_last);
-void			close_unused_pipes(int *prev_fd, int *curr_fd, int fd_in,
-					int fd_out, int is_last);
+void			close_unused_pipes(t_pipeinfo *info);
+
 void			exec_pipeline_builtin(t_token *current, t_env **env);
 void			exec_pipeline_external(t_token *current, t_env **env);
 void			execute_pipeline_child(t_token *current, t_env **env,
